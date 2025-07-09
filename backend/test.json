@@ -1,0 +1,25 @@
+{
+  "datos": {
+    "cliente": "Facundo Francou",
+    "domicilio": "",
+    "localidad": "",
+    "condicion_iva": "Monotributo",
+    "cuit": "20-35700030-1",
+    "condicion_operacion": "CTA CTE",
+    "fecha_emision": "3/07/2025",
+    "productos": [
+      {
+        "nombre": "SEM TRIGO FIS. FAVORITO X 40 KG (CURADA)",
+        "cantidad": 345,
+        "unidad": "Bolsas",
+        "codigo_bit": "2131"
+      },
+      {
+        "nombre": "FOSFATO MONOAMONICO GRANEL",
+        "cantidad": 32,
+        "unidad": "Toneladas",
+        "codigo_bit": "1018"
+      }
+    ]
+  }
+}
