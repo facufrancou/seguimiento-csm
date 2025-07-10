@@ -29,6 +29,8 @@ export default function RemitoForm() {
   const [operarios, setOperarios] = useState([]);
   const [operarioIds, setOperarioIds] = useState([]);
   const [showProductoManual, setShowProductoManual] = useState(false);
+  // Cambiar productoPendiente a una cola de productos pendientes
+  const [productosPendientes, setProductosPendientes] = useState([]);
 
   useEffect(() => {
     const cargarClientes = async () => {
@@ -176,10 +178,10 @@ export default function RemitoForm() {
         producto_id: match ? match.id : null
       };
     });
-    // Si hay productos sin producto_id, preguntar si desea crearlos
-    const prodFaltante = productosConId.find(p => !p.producto_id);
-    if (prodFaltante) {
-      setProductoPendiente(prodFaltante);
+    // Detectar todos los productos sin producto_id
+    const faltantes = productosConId.filter(p => !p.producto_id);
+    if (faltantes.length > 0) {
+      setProductosPendientes(faltantes);
       setShowNuevoProducto(true);
       setProductosSeleccionados(productosConId);
       return;
@@ -211,17 +213,23 @@ export default function RemitoForm() {
   // Confirmar creación de producto
   const handleConfirmarNuevoProducto = async () => {
     setShowNuevoProducto(false);
-    if (!productoPendiente) return;
-    try {
-      const nuevo = await crearProducto({ nombre: productoPendiente.nombre });
-      // Actualizar productos seleccionados con el nuevo id
-      setProductosSeleccionados((prev) => prev.map(p =>
-        p.nombre === productoPendiente.nombre ? { ...p, producto_id: nuevo.id } : p
-      ));
-    } catch (err) {
-      alert('No se pudo crear el producto.');
+    if (!productosPendientes.length) return;
+    // Crear todos los productos pendientes en la base
+    for (const prod of productosPendientes) {
+      try {
+        const nuevo = await crearProducto({
+          nombre: prod.nombre,
+          unidad_medida: prod.unidad_medida,
+          codigo_bit: prod.codigo_bit
+        });
+        setProductosSeleccionados((prev) => prev.map(p =>
+          p.nombre === prod.nombre ? { ...p, producto_id: nuevo.id } : p
+        ));
+      } catch (err) {
+        alert(`No se pudo crear el producto: ${prod.nombre}`);
+      }
     }
-    setProductoPendiente(null);
+    setProductosPendientes([]);
   };
 
   // Agregar producto manualmente
@@ -515,9 +523,28 @@ export default function RemitoForm() {
       {/* Modal para nuevo producto */}
       <ConfirmarNuevoProductoModal
         show={showNuevoProducto}
-        producto={productoPendiente}
-        onConfirm={handleConfirmarNuevoProducto}
-        onCancel={() => { setShowNuevoProducto(false); setProductoPendiente(null); }}
+        productos={productosPendientes}
+        onConfirm={async () => {
+          setShowNuevoProducto(false);
+          if (!productosPendientes.length) return;
+          // Crear todos los productos pendientes en la base
+          for (const prod of productosPendientes) {
+            try {
+              const nuevo = await crearProducto({
+                nombre: prod.nombre,
+                unidad_medida: prod.unidad_medida,
+                codigo_bit: prod.codigo_bit
+              });
+              setProductosSeleccionados((prev) => prev.map(p =>
+                p.nombre === prod.nombre ? { ...p, producto_id: nuevo.id } : p
+              ));
+            } catch (err) {
+              alert(`No se pudo crear el producto: ${prod.nombre}`);
+            }
+          }
+          setProductosPendientes([]);
+        }}
+        onCancel={() => setShowNuevoProducto(false)}
       />
       {/* Modal para producto manual */}
       <ProductoManualModal

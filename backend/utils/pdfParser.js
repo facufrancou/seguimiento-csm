@@ -69,7 +69,7 @@ async function parsearRemitoPDF(buffer) {
 
     const cantidad = parseFloat(l2);
     const codigo = l3.match(/^\d{3,6}$/) ? l3 : null;
-    const unidad = l1.match(/(Bolsas|Toneladas|Litros|Cajas|Kg|kg|Gr|gr|lts|m3|u|U)$/)?.[1] || '';
+    const unidad = l1.match(/(Bolsas|Toneladas|Litros|Cajas|Kilogramos|kg|Gr|gr|lts|m3|u|U|Unidades)$/)?.[1] || '';
     const nombre = unidad ? l1.replace(unidad, '').trim() : '';
 
     if (!isNaN(cantidad) && codigo && nombre) {
