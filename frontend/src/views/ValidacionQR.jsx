@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import { Container, Card, Form, Button, Alert, Spinner } from 'react-bootstrap';
 import { validarQR, registrarEntrega } from '../services/api';
 
 export default function ValidacionQR() {
-  const { token } = useParams();
+  const { token: paramToken } = useParams();
+  const location = useLocation();
+  // Obtener token desde query param si existe
+  const queryToken = new URLSearchParams(location.search).get('token');
+  const token = paramToken || queryToken;
   const [remito, setRemito] = useState(null);
   const [productos, setProductos] = useState([]);
   const [operarios, setOperarios] = useState([]);
@@ -25,7 +29,8 @@ export default function ValidacionQR() {
         // Obtener operarios asignados a este remito
         const res = await fetch(`/api/remitos/${data.id}/operarios`);
         const ops = await res.json();
-        setOperarios(ops);
+        // Si el backend devuelve { todos, asignados }, usar todos
+        setOperarios(Array.isArray(ops) ? ops : ops.todos || []);
       } catch (err) {
         console.error('Error al validar QR:', err);
         setError('Token inválido, expirado o remito no encontrado.');
@@ -73,7 +78,15 @@ export default function ValidacionQR() {
 
   if (loading) return <div className="text-center mt-5"><Spinner animation="border" /></div>;
   if (error) return <Alert variant="danger" className="mt-4">{error}</Alert>;
-  if (!remito) return null;
+  if (!remito) {
+    return (
+      <Container fluid className="py-4 px-2 w-100">
+        <Alert variant="warning" className="mt-4">
+          No se encontraron datos del remito. Verificá el token o intentá nuevamente.
+        </Alert>
+      </Container>
+    );
+  }
 
   // Si la entrega fue registrada correctamente, mostrar solo el mensaje
   if (msg && msg.toLowerCase().includes('registrada')) {
@@ -89,9 +102,9 @@ export default function ValidacionQR() {
       <Card>
         <Card.Body>
           <h4 className="mb-3">Entrega de Remito</h4>
-          <div className="mb-2"><b>N° Remito:</b> {remito.numero_remito}</div>
-          <div className="mb-2"><b>Cliente:</b> {remito.cliente_nombre}</div>
-          <div className="mb-2"><b>Fecha:</b> {remito.fecha_emision}</div>
+          <div className="mb-2"><b>N° Remito:</b> {remito.numero_remito || 'Sin número'}</div>
+          <div className="mb-2"><b>Cliente:</b> {remito.cliente_nombre || 'Sin cliente'}</div>
+          <div className="mb-2"><b>Fecha:</b> {remito.fecha_emision ? new Date(remito.fecha_emision).toLocaleDateString() : 'Sin fecha'}</div>
           <Form onSubmit={handleRegistrar}>
             <Form.Group className="mb-3">
               <Form.Label>Operario que entrega</Form.Label>

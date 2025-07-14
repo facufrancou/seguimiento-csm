@@ -101,4 +101,16 @@ export const getOperarios = async () => {
   return response.data;
 };
 
+// Obtener remitos pendientes
+export const getRemitosPendientes = async () => {
+  const response = await api.get('/api/remitos?estado=pendiente');
+  return response.data;
+};
+
+// Obtener detalle de productos de un remito
+export const getDetalleRemito = async (remitoId) => {
+  const response = await api.get(`/api/entregas/${remitoId}/detalle`);
+  return response.data;
+};
+
 export default api;

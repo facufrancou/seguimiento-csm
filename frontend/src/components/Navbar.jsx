@@ -43,6 +43,7 @@ export default function Navbar() {
           <Link className={`nav-link ${isActive('/carga') ? 'active' : ''}`} to="/carga">Carga</Link>
           <Link className={`nav-link ${isActive('/reportes') ? 'active' : ''}`} to="/reportes">Reportes</Link>
           <Link className={`nav-link ${isActive('/alta-usuario') ? 'active' : ''}`} to="/alta-usuario">Usuarios</Link>
+          <Link className={`nav-link ${isActive('/remitos-pendientes') ? 'active' : ''}`} to="/remitos-pendientes">Remitos pendientes</Link>
         </div>
         {isLoggedIn && (
           <button className="btn btn-outline-light btn-sm" onClick={handleLogout}>

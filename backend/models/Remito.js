@@ -1,7 +1,9 @@
-// models/Remito.js
 const db = require('../config/db');
-
 const Remito = {
+  // ...existing code...
+  async updateEstado(id, estado) {
+    await db.query('UPDATE remitos SET estado = ? WHERE id = ?', [estado, id]);
+  },
   async getAll() {
     const [rows] = await db.query(`
       SELECT r.*, c.nombre AS cliente_nombre
@@ -75,6 +77,93 @@ const Remito = {
       [remitoId]
     );
     return rows;
+  },
+
+  async updateOperarios(remitoId, operarioIds) {
+    await db.query('DELETE FROM remito_operarios WHERE remito_id = ?', [remitoId]);
+    if (Array.isArray(operarioIds) && operarioIds.length > 0) {
+      for (const operarioId of operarioIds) {
+        await db.query(
+          'INSERT INTO remito_operarios (remito_id, operario_id) VALUES (?, ?)',
+          [remitoId, operarioId]
+        );
+      }
+    }
+  },
+
+  async search(query) {
+    const [rows] = await db.query(`
+      SELECT r.*, c.nombre AS cliente_nombre
+      FROM remitos r
+      JOIN clientes c ON r.cliente_id = c.id
+      WHERE r.numero_remito LIKE ? OR c.nombre LIKE ?
+      ORDER BY r.fecha_emision DESC
+    `, [`%${query}%`, `%${query}%`]);
+    return rows;
+  },
+
+  async getRemitosByClienteId(clienteId) {
+    const [rows] = await db.query(`
+      SELECT r.*, c.nombre AS cliente_nombre
+      FROM remitos r
+      JOIN clientes c ON r.cliente_id = c.id
+      WHERE c.id = ?
+      ORDER BY r.fecha_emision DESC
+    `, [clienteId]);
+    return rows;
+  },
+
+  async getRemitosCountByClienteId(clienteId) {
+    const [rows] = await db.query(`
+      SELECT COUNT(*) as count
+      FROM remitos r
+      JOIN clientes c ON r.cliente_id = c.id
+      WHERE c.id = ?
+    `, [clienteId]);
+    return rows[0]?.count || 0;
+  },
+
+  async getPaginatedRemitos(page, limit) {
+    const offset = (page - 1) * limit;
+    const [rows] = await db.query(`
+      SELECT r.*, c.nombre AS cliente_nombre
+      FROM remitos r
+      JOIN clientes c ON r.cliente_id = c.id
+      ORDER BY r.fecha_emision DESC
+      LIMIT ?, ?
+    `, [offset, limit]);
+    return rows;
+  },
+
+  async getRemitosCount() {
+    const [rows] = await db.query(`
+      SELECT COUNT(*) as count
+      FROM remitos
+    `);
+    return rows[0]?.count || 0;
+  },
+
+  async update(id, data) {
+    const {
+      numero_remito, cliente_id, fecha_emision,
+      condicion_operacion, observaciones, archivo_pdf
+    } = data;
+
+    await db.query(`
+      UPDATE remitos
+      SET
+        numero_remito = ?,
+        cliente_id = ?,
+        fecha_emision = ?,
+        condicion_operacion = ?,
+        observaciones = ?,
+        archivo_pdf = ?
+      WHERE id = ?
+    `, [numero_remito, cliente_id, fecha_emision, condicion_operacion, observaciones, archivo_pdf, id]);
+  },
+
+  async delete(id) {
+    await db.query('DELETE FROM remitos WHERE id = ?', [id]);
   }
 };
 

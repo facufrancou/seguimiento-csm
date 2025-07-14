@@ -62,8 +62,11 @@ router.post('/registrar-entrega', async (req, res) => {
   }
   // Registrar entrega en la tabla entregas
   await Entrega.create({ remito_id, operario_id, nombre_operario });
-  // Aquí solo respondemos OK
+  // Actualizar estado del remito a 'entregado'
+  await Remito.updateEstado(remito_id, 'entregado');
   res.json({ mensaje: 'Entrega registrada correctamente.' });
 });
+
+router.put('/:id', authMiddleware, remitoController.updatePendiente);
 
 module.exports = router;

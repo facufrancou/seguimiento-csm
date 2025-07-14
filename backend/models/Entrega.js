@@ -20,6 +20,8 @@ const Entrega = {
   },
 
   async create({ remito_id, operario_id, nombre_operario }) {
+    // Eliminar entrega anterior si existe
+    await db.query('DELETE FROM entregas WHERE remito_id = ?', [remito_id]);
     const [result] = await db.query(
       'INSERT INTO entregas (remito_id, operario_id, nombre_operario) VALUES (?, ?, ?)',
       [remito_id, operario_id, nombre_operario]

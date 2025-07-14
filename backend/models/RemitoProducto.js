@@ -25,6 +25,10 @@ const RemitoProducto = {
       UPDATE remito_productos SET entregado = 1
       WHERE remito_id = ? AND producto_id = ?
     `, [remito_id, producto_id]);
+  },
+
+  async deleteByRemito(remito_id) {
+    await db.query('DELETE FROM remito_productos WHERE remito_id = ?', [remito_id]);
   }
 };
 

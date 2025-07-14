@@ -7,6 +7,7 @@ import Reportes from './views/Reportes';
 import Navbar from './components/Navbar';
 import LoginForm from './components/LoginForm';
 import AltaUsuario from './views/AltaUsuario';
+import RemitosPendientes from './components/RemitosPendientes';
 
 function AppContent() {
   const location = useLocation();
@@ -19,8 +20,10 @@ function AppContent() {
           <Route path="/" element={<Home />} />
           <Route path="/carga" element={<CargaRemito />} />
           <Route path="/validar/:token" element={<ValidacionQR />} />
+          <Route path="/validar" element={<ValidacionQR />} />
           <Route path="/validacion" element={<ValidacionQR />} />
           <Route path="/reportes" element={<Reportes />} />
+          <Route path="/remitos-pendientes" element={<RemitosPendientes />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/alta-usuario" element={<AltaUsuario />} />
         </Routes>

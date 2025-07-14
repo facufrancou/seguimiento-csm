@@ -14,4 +14,7 @@ router.get('/', authMiddleware, entregaController.getAll);
 // Reporte de entregas
 router.get('/reporte', entregaController.reporteEntregas);
 
+// Detalle de productos entregados por remito
+router.get('/:remito_id/detalle', entregaController.detalleEntrega);
+
 module.exports = router;

@@ -69,11 +69,21 @@ const entregaController = {
 
   async reporteEntregas(req, res) {
     try {
-      // Aquí deberías armar la consulta real para el reporte
-      // Por ahora, devuelvo un array vacío de ejemplo
-      res.json([]);
+      const entregas = await Entrega.getAll();
+      res.json(entregas);
     } catch (err) {
       res.status(500).json({ error: 'Error al obtener el reporte de entregas' });
+    }
+  },
+
+  // Nuevo endpoint: detalle de productos entregados por remito
+  async detalleEntrega(req, res) {
+    try {
+      const remito_id = req.params.remito_id;
+      const productos = await RemitoProducto.getByRemito(remito_id);
+      res.json(productos);
+    } catch (err) {
+      res.status(500).json({ error: 'Error al obtener el detalle de productos' });
     }
   }
 };
