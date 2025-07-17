@@ -110,10 +110,12 @@ COLLATE = utf8mb4_0900_ai_ci;
 CREATE TABLE IF NOT EXISTS `seguimiento_entregas`.`productos` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `codigo_bit` VARCHAR(20) NULL DEFAULT NULL,
+  `codigo_barra` VARCHAR(50) NULL DEFAULT NULL,
   `nombre` VARCHAR(255) NOT NULL,
   `unidad_medida` VARCHAR(50) NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `codigo_bit` (`codigo_bit` ASC) VISIBLE)
+  UNIQUE INDEX `codigo_bit` (`codigo_bit` ASC) VISIBLE,
+  UNIQUE INDEX `codigo_barra` (`codigo_barra` ASC) VISIBLE)
 ENGINE = InnoDB
 AUTO_INCREMENT = 28
 DEFAULT CHARACTER SET = utf8mb4
@@ -166,9 +168,6 @@ DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
 
--- -----------------------------------------------------
--- Table `seguimiento_entregas`.`tokens_acceso`
--- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `seguimiento_entregas`.`tokens_acceso` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `remito_id` INT NOT NULL,
@@ -183,6 +182,29 @@ CREATE TABLE IF NOT EXISTS `seguimiento_entregas`.`tokens_acceso` (
     REFERENCES `seguimiento_entregas`.`remitos` (`id`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 13
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `seguimiento_entregas`.`entrega_detalle`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `seguimiento_entregas`.`entrega_detalle` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `entrega_id` INT NOT NULL,
+  `producto_id` INT NOT NULL,
+  `codigo_barra` VARCHAR(50) NOT NULL,
+  `fecha_escaneo` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  INDEX `entrega_id` (`entrega_id` ASC) VISIBLE,
+  INDEX `producto_id` (`producto_id` ASC) VISIBLE,
+  CONSTRAINT `entrega_detalle_ibfk_1`
+    FOREIGN KEY (`entrega_id`)
+    REFERENCES `seguimiento_entregas`.`entregas` (`id`),
+  CONSTRAINT `entrega_detalle_ibfk_2`
+    FOREIGN KEY (`producto_id`)
+    REFERENCES `seguimiento_entregas`.`productos` (`id`)
+) ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
