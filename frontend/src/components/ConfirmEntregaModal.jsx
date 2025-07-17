@@ -28,7 +28,17 @@ export default function ConfirmEntregaModal({
       </Modal.Body>
       {!loading && (
         <Modal.Footer>
-          <Button variant="secondary" onClick={onHide}>
+          <Button
+            variant="secondary"
+            onClick={onHide}
+            style={{
+              fontWeight: 'bold',
+              borderRadius: '5px',
+              boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+              background: 'linear-gradient(90deg, #0f574e, #0a3d38)',
+              color: '#fff'
+            }}
+          >
             {cancelText}
           </Button>
           <Button variant="primary" onClick={onConfirm}>

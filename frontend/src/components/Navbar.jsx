@@ -28,8 +28,8 @@ export default function Navbar() {
   const user = JSON.parse(localStorage.getItem('user')); // Obtener datos del usuario logueado
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-3">
-      <Link className="navbar-brand fw-bold" to="/">
+    <nav className="navbar navbar-expand-lg navbar-dark" style={{ background: 'linear-gradient(135deg, #0f574e, #0a3d38)', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)' }}>
+      <Link className="navbar-brand fw-bold" to="/" style={{ color: '#fff' }}>
         🧾 Entregas
       </Link>
       <button
@@ -43,14 +43,13 @@ export default function Navbar() {
       >
         <span className="navbar-toggler-icon"></span>
       </button>
-
       <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div className="navbar-nav me-auto">
-          <Link className={`nav-link ${isActive('/') ? 'active' : ''}`} to="/">Inicio</Link>
-          <Link className={`nav-link ${isActive('/carga') ? 'active' : ''}`} to="/carga">Carga</Link>
-          <Link className={`nav-link ${isActive('/reportes') ? 'active' : ''}`} to="/reportes">Reportes</Link>
-          <Link className={`nav-link ${isActive('/alta-usuario') ? 'active' : ''}`} to="/alta-usuario">Usuarios</Link>
-          <Link className={`nav-link ${isActive('/remitos-pendientes') ? 'active' : ''}`} to="/remitos-pendientes">Remitos pendientes</Link>
+          <Link className={`nav-link ${isActive('/') ? 'active' : ''}`} to="/" style={{ color: '#fff' }}>Inicio</Link>
+          <Link className={`nav-link ${isActive('/carga') ? 'active' : ''}`} to="/carga" style={{ color: '#fff' }}>Carga</Link>
+          <Link className={`nav-link ${isActive('/reportes') ? 'active' : ''}`} to="/reportes" style={{ color: '#fff' }}>Reportes</Link>
+          <Link className={`nav-link ${isActive('/alta-usuario') ? 'active' : ''}`} to="/alta-usuario" style={{ color: '#fff' }}>Usuarios</Link>
+          <Link className={`nav-link ${isActive('/remitos-pendientes') ? 'active' : ''}`} to="/remitos-pendientes" style={{ color: '#fff' }}>Remitos pendientes</Link>
         </div>
         {isLoggedIn && (
           <div className="navbar-text text-light me-3 d-flex align-items-center">
@@ -59,7 +58,7 @@ export default function Navbar() {
           </div>
         )}
         {isLoggedIn && (
-          <button className="btn btn-outline-light btn-sm" onClick={handleLogout}>
+          <button className="btn btn-outline-light btn-sm" onClick={handleLogout} style={{ borderRadius: '5px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)' }}>
             Cerrar sesión
           </button>
         )}

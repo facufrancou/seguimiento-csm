@@ -360,7 +360,18 @@ export default function RemitoForm() {
           <div className="mb-3">
             <label className="form-label d-block" style={{ fontWeight: 'bold', color: '#6c757d' }}>Productos</label>
             <div className="mb-3 d-flex gap-2 align-items-center">
-              <button type="button" className="btn btn-outline-primary" onClick={abrirModalProductos} style={{ fontWeight: 'bold' }}>
+              <button
+                type="button"
+                className="btn btn-outline-primary"
+                onClick={abrirModalProductos}
+                style={{
+                  fontWeight: 'bold',
+                  borderRadius: '5px',
+                  boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+                  background: 'linear-gradient(90deg, #0f574e, #0a3d38)',
+                  color: '#fff'
+                }}
+              >
                 Agregar o modificar productos
               </button>
               <button type="button" className="btn btn-outline-secondary" onClick={() => setShowProductoManual(true)} style={{ fontWeight: 'bold' }}>
@@ -467,7 +478,18 @@ export default function RemitoForm() {
           <div className="mb-3">
             <label className="form-label d-block">Productos</label>
             <div className="mb-3 d-flex gap-2 align-items-center">
-              <button type="button" className="btn btn-outline-primary" onClick={abrirModalProductos}>
+              <button
+                type="button"
+                className="btn btn-outline-primary"
+                onClick={abrirModalProductos}
+                style={{
+                  fontWeight: 'bold',
+                  borderRadius: '5px',
+                  boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+                  background: 'linear-gradient(90deg, #0f574e, #0a3d38)',
+                  color: '#fff'
+                }}
+              >
                 Agregar o modificar productos
               </button>
               <button type="button" className="btn btn-outline-secondary" onClick={() => setShowProductoManual(true)}>

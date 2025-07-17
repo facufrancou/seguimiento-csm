@@ -39,33 +39,45 @@ export default function AltaUsuario() {
   };
 
   return (
-    <Container fluid className="py-4 px-2 w-100">
+    <Container fluid className="py-4 px-2 w-100" style={{ backgroundColor: '#fff', borderRadius: '10px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)' }}>
       <Card>
         <Card.Body>
-          <h4 className="mb-3">Alta de Usuario / Operario</h4>
+          <h4 className="mb-3" style={{ fontWeight: 'bold', color: '#0a3d38' }}>Alta de Usuario / Operario</h4>
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
-              <Form.Label>Nombre</Form.Label>
-              <Form.Control value={nombre} onChange={e => setNombre(e.target.value)} required />
+              <Form.Label style={{ fontWeight: 'bold', color: '#0a3d38' }}>Nombre</Form.Label>
+              <Form.Control value={nombre} onChange={e => setNombre(e.target.value)} required style={{ borderRadius: '5px', borderColor: '#0f574e' }} />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Email</Form.Label>
-              <Form.Control type="text" value={email} onChange={e => setEmail(e.target.value)} required />
+              <Form.Label style={{ fontWeight: 'bold', color: '#0a3d38' }}>Email</Form.Label>
+              <Form.Control type="text" value={email} onChange={e => setEmail(e.target.value)} required style={{ borderRadius: '5px', borderColor: '#0f574e' }} />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Contraseña</Form.Label>
-              <Form.Control type="password" value={password} onChange={e => setPassword(e.target.value)} required />
+              <Form.Label style={{ fontWeight: 'bold', color: '#0a3d38' }}>Contraseña</Form.Label>
+              <Form.Control type="password" value={password} onChange={e => setPassword(e.target.value)} required style={{ borderRadius: '5px', borderColor: '#0f574e' }} />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Rol</Form.Label>
-              <Form.Select value={rol} onChange={e => setRol(e.target.value)}>
+              <Form.Label style={{ fontWeight: 'bold', color: '#0a3d38' }}>Rol</Form.Label>
+              <Form.Select value={rol} onChange={e => setRol(e.target.value)} style={{ borderRadius: '5px', borderColor: '#0f574e' }}>
                 <option value="operario">Operario</option>
                 <option value="admin">Admin</option>
               </Form.Select>
             </Form.Group>
-            {msg && <Alert variant="success">{msg}</Alert>}
-            {error && <Alert variant="danger">{error}</Alert>}
-            <Button type="submit" variant="primary" disabled={loading} className="w-100">
+            {msg && <Alert variant="success" style={{ borderRadius: '5px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)' }}>{msg}</Alert>}
+            {error && <Alert variant="danger" style={{ borderRadius: '5px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)' }}>{error}</Alert>}
+            <Button
+              type="submit"
+              variant="primary"
+              disabled={loading}
+              className="w-100"
+              style={{
+                fontWeight: 'bold',
+                borderRadius: '5px',
+                boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+                background: 'linear-gradient(90deg, #0f574e, #0a3d38)',
+                color: '#fff'
+              }}
+            >
               {loading ? 'Creando...' : 'Crear usuario'}
             </Button>
           </Form>

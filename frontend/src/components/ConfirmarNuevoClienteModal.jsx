@@ -29,49 +29,49 @@ export default function ConfirmarNuevoClienteModal({ show, cliente, onConfirm, o
   const esAltaManual = !cliente?.nombre;
 
   return (
-    <Modal show={show} onHide={onCancel} centered>
-      <Modal.Header closeButton>
-        <Modal.Title>{esAltaManual ? 'Nuevo cliente' : 'Cliente no encontrado'}</Modal.Title>
+    <Modal show={show} onHide={onCancel} centered style={{ borderRadius: '10px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)' }}>
+      <Modal.Header closeButton style={{ backgroundColor: '#0a3d38', color: '#fff', borderRadius: '10px 10px 0 0' }}>
+        <Modal.Title style={{ fontWeight: 'bold' }}>{esAltaManual ? 'Nuevo cliente' : 'Cliente no encontrado'}</Modal.Title>
       </Modal.Header>
-      <Modal.Body>
+      <Modal.Body style={{ padding: '20px', backgroundColor: '#fff', borderRadius: '0 0 10px 10px' }}>
         {esAltaManual ? (
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-2">
-              <Form.Label>Nombre</Form.Label>
-              <Form.Control name="nombre" value={form.nombre} onChange={handleChange} required />
+              <Form.Label style={{ fontWeight: 'bold', color: '#0a3d38' }}>Nombre</Form.Label>
+              <Form.Control name="nombre" value={form.nombre} onChange={handleChange} required style={{ borderRadius: '5px', borderColor: '#0f574e' }} />
             </Form.Group>
             <Form.Group className="mb-2">
-              <Form.Label>CUIT</Form.Label>
-              <Form.Control name="cuit" value={form.cuit} onChange={handleChange} />
+              <Form.Label style={{ fontWeight: 'bold', color: '#0a3d38' }}>CUIT</Form.Label>
+              <Form.Control name="cuit" value={form.cuit} onChange={handleChange} style={{ borderRadius: '5px', borderColor: '#0f574e' }} />
             </Form.Group>
             <Form.Group className="mb-2">
-              <Form.Label>Domicilio</Form.Label>
-              <Form.Control name="domicilio" value={form.domicilio} onChange={handleChange} />
+              <Form.Label style={{ fontWeight: 'bold', color: '#0a3d38' }}>Domicilio</Form.Label>
+              <Form.Control name="domicilio" value={form.domicilio} onChange={handleChange} style={{ borderRadius: '5px', borderColor: '#0f574e' }} />
             </Form.Group>
             <Form.Group className="mb-2">
-              <Form.Label>Localidad</Form.Label>
-              <Form.Control name="localidad" value={form.localidad} onChange={handleChange} />
+              <Form.Label style={{ fontWeight: 'bold', color: '#0a3d38' }}>Localidad</Form.Label>
+              <Form.Control name="localidad" value={form.localidad} onChange={handleChange} style={{ borderRadius: '5px', borderColor: '#0f574e' }} />
             </Form.Group>
             <Form.Group className="mb-2">
-              <Form.Label>Condición IVA</Form.Label>
-              <Form.Control name="condicion_iva" value={form.condicion_iva} onChange={handleChange} />
+              <Form.Label style={{ fontWeight: 'bold', color: '#0a3d38' }}>Condición IVA</Form.Label>
+              <Form.Control name="condicion_iva" value={form.condicion_iva} onChange={handleChange} style={{ borderRadius: '5px', borderColor: '#0f574e' }} />
             </Form.Group>
             <div className="d-flex justify-content-end gap-2 mt-3">
-              <Button variant="secondary" onClick={onCancel}>Cancelar</Button>
-              <Button variant="primary" type="submit">Guardar cliente</Button>
+              <Button variant="secondary" onClick={onCancel} style={{ fontWeight: 'bold', borderRadius: '5px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)' }}>Cancelar</Button>
+              <Button variant="primary" type="submit" style={{ fontWeight: 'bold', borderRadius: '5px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)', background: 'linear-gradient(90deg, #0f574e, #0a3d38)' }}>Guardar cliente</Button>
             </div>
           </Form>
         ) : (
           <>
-            <p>El cliente <b>{cliente?.nombre}</b> no existe en la base de datos.</p>
-            <p>¿Deseás guardarlo como nuevo cliente?</p>
+            <p style={{ fontWeight: 'bold', color: '#0a3d38' }}>El cliente <b>{cliente?.nombre}</b> no existe en la base de datos.</p>
+            <p style={{ fontWeight: 'bold', color: '#0a3d38' }}>¿Deseás guardarlo como nuevo cliente?</p>
           </>
         )}
       </Modal.Body>
       {!esAltaManual && (
-        <Modal.Footer>
-          <Button variant="secondary" onClick={onCancel}>Cancelar</Button>
-          <Button variant="primary" onClick={() => onConfirm(cliente)}>Guardar cliente</Button>
+        <Modal.Footer style={{ backgroundColor: '#fff', borderRadius: '0 0 10px 10px' }}>
+          <Button variant="secondary" onClick={onCancel} style={{ fontWeight: 'bold', borderRadius: '5px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)' }}>Cancelar</Button>
+          <Button variant="primary" onClick={() => onConfirm(cliente)} style={{ fontWeight: 'bold', borderRadius: '5px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)', background: 'linear-gradient(90deg, #0f574e, #0a3d38)' }}>Guardar cliente</Button>
         </Modal.Footer>
       )}
     </Modal>

@@ -129,23 +129,34 @@ export default function RemitosPendientes() {
                         <td>{remito.fecha_emision ? new Date(remito.fecha_emision).toLocaleDateString() : ''}</td>
                         <td>{remito.numero_remito}</td>
                         <td>
-                          <Button
-                            variant="info"
-                            size="sm"
-                            className="me-2"
+                          <button
+                            type="button"
+                            className="btn btn-outline-secondary me-2"
                             onClick={() => handleVerRemito(remito)}
-                            style={{ fontWeight: 'bold', borderRadius: '5px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)', background: 'linear-gradient(90deg, #17a2b8, #117a8b)' }}
+                            style={{
+                              fontWeight: 'bold',
+                              borderRadius: '5px',
+                              boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+                              background: 'linear-gradient(90deg, #0f574e, #0a3d38)',
+                              color: '#fff'
+                            }}
                           >
                             Ver detalle
-                          </Button>
-                          <Button
-                            variant="warning"
-                            size="sm"
+                          </button>
+                          <button
+                            type="button"
+                            className="btn btn-warning"
                             onClick={() => handleEditarRemito(remito)}
-                            style={{ fontWeight: 'bold', borderRadius: '5px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)', background: 'linear-gradient(90deg, #ffc107, #e0a800)' }}
+                            style={{
+                              fontWeight: 'bold',
+                              borderRadius: '5px',
+                              boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+                              background: 'linear-gradient(90deg, #ffc107, #e0a800)',
+                              color: '#fff'
+                            }}
                           >
                             Editar
-                          </Button>
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -163,7 +174,7 @@ export default function RemitosPendientes() {
         <Modal.Body style={{ padding: '20px', backgroundColor: '#f8f9fa', borderRadius: '0 0 10px 10px' }}>
           {modalRemito && (
             <>
-              <p><b style={{ color: '#495057' }}>Cliente:</b> {modalRemito.cliente}</p>
+              <p><b style={{ color: '#495057' }}>Cliente:</b> {modalRemito.cliente_nombre}</p>
               <p><b style={{ color: '#495057' }}>Fecha:</b> {modalRemito.fecha_emision ? new Date(modalRemito.fecha_emision).toLocaleDateString() : ''}</p>
               <p><b style={{ color: '#495057' }}>N° Remito:</b> {modalRemito.numero_remito}</p>
             </>
@@ -261,6 +272,7 @@ export default function RemitosPendientes() {
           <Button variant="secondary" onClick={() => setShowQRModal(false)}>Cerrar</Button>
         </Modal.Footer>
       </Modal>
+      
     </div>
   );
 }
