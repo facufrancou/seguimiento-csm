@@ -26,6 +26,13 @@ const productoController = {
   async delete(req, res) {
     await Producto.delete(req.params.id);
     res.json({ mensaje: 'Producto eliminado' });
+  },
+
+  async getByCodigoBarra(req, res) {
+    const { codigo_barra } = req.query;
+    const producto = await Producto.getByCodigoBarra(codigo_barra);
+    if (!producto) return res.status(404).json({ error: 'Producto no encontrado' });
+    res.json(producto);
   }
 };
 

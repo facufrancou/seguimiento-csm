@@ -33,11 +33,13 @@ const Remito = {
     `, [id]);
 
     const [productos] = await db.query(`
-      SELECT rp.*, p.nombre, p.codigo_bit, p.unidad_medida
+      SELECT rp.*, p.nombre, p.codigo_bit, p.codigo_barra, p.unidad_medida
       FROM remito_productos rp
       JOIN productos p ON rp.producto_id = p.id
       WHERE rp.remito_id = ?
     `, [id]);
+
+    console.log('Productos obtenidos:', productos); // Log para depurar
 
     return { ...remito[0], productos };
   },

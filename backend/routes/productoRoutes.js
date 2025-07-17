@@ -9,5 +9,6 @@ router.get('/:id', authMiddleware, productoController.getById);
 router.post('/', authMiddleware, productoController.create);
 router.put('/:id', authMiddleware, productoController.update);
 router.delete('/:id', authMiddleware, productoController.delete);
+router.get('/buscar', authMiddleware, productoController.getByCodigoBarra);
 
 module.exports = router;

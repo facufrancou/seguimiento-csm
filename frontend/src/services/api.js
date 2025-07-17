@@ -13,8 +13,8 @@ const api = axios.create({
 // 📦 ENDPOINTS: Ejemplos básicos
 
 // Login de usuario
-export const login = async (email, password) => {
-  const response = await api.post('/api/auth/login', { email, password });
+export const login = async (usuario, password) => {
+  const response = await api.post('/api/auth/login', { email: usuario, contraseña: password });
   return response.data;
 };
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Form, Button, Card, Alert, Container } from 'react-bootstrap';
 import { registrarUsuario } from '../services/api';
+import { hasPermission } from '../utils/roleValidator';
 
 export default function AltaUsuario() {
   const [nombre, setNombre] = useState('');
@@ -10,6 +11,13 @@ export default function AltaUsuario() {
   const [msg, setMsg] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const allowedRoles = ['admin'];
+  const user = JSON.parse(localStorage.getItem('user'));
+
+  if (!hasPermission(user?.rol, allowedRoles)) {
+    return <Alert variant="danger">No tienes permiso para acceder a esta página.</Alert>;
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -42,7 +50,7 @@ export default function AltaUsuario() {
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Email</Form.Label>
-              <Form.Control type="email" value={email} onChange={e => setEmail(e.target.value)} required />
+              <Form.Control type="text" value={email} onChange={e => setEmail(e.target.value)} required />
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Contraseña</Form.Label>

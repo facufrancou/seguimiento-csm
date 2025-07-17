@@ -57,8 +57,8 @@ router.post('/registrar-entrega', async (req, res) => {
   if (!tokenRow) return res.status(400).json({ error: 'Token inválido o expirado' });
   const remito_id = tokenRow.remito_id;
   // Marcar productos como entregados
-  for (let pid of productos) {
-    await RemitoProducto.marcarEntregado(remito_id, pid);
+  for (let producto of productos) {
+    await RemitoProducto.marcarEntregado(remito_id, producto.producto_id);
   }
   // Registrar entrega en la tabla entregas
   await Entrega.create({ remito_id, operario_id, nombre_operario });

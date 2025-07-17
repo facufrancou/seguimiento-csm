@@ -1,15 +1,16 @@
 // src/components/Navbar.jsx
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { FaUser } from 'react-icons/fa';
 
 export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Simulación de sesión activa (más adelante se puede mejorar)
-  const isLoggedIn = true; // Reemplazaremos con lógica real
+  // Lógica de sesión actualizada
+  const isLoggedIn = localStorage.getItem('token'); // Verificar si hay un token almacenado
   const handleLogout = () => {
-    // Aquí podés limpiar sesión o tokens si usás uno
+    localStorage.removeItem('token'); // Limpiar el token de sesión
     navigate('/login');
   };
 
@@ -19,6 +20,12 @@ export default function Navbar() {
   if (location.pathname.startsWith('/validar') || location.pathname === '/validacion') {
     return null;
   }
+
+  if (!isLoggedIn) {
+    return null; // Ocultar la navbar si no hay sesión activa
+  }
+
+  const user = JSON.parse(localStorage.getItem('user')); // Obtener datos del usuario logueado
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-3">
@@ -45,6 +52,12 @@ export default function Navbar() {
           <Link className={`nav-link ${isActive('/alta-usuario') ? 'active' : ''}`} to="/alta-usuario">Usuarios</Link>
           <Link className={`nav-link ${isActive('/remitos-pendientes') ? 'active' : ''}`} to="/remitos-pendientes">Remitos pendientes</Link>
         </div>
+        {isLoggedIn && (
+          <div className="navbar-text text-light me-3 d-flex align-items-center">
+            <FaUser className="me-2" />
+            {user?.nombre || 'Usuario'}
+          </div>
+        )}
         {isLoggedIn && (
           <button className="btn btn-outline-light btn-sm" onClick={handleLogout}>
             Cerrar sesión

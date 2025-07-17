@@ -17,4 +17,10 @@ router.get('/reporte', entregaController.reporteEntregas);
 // Detalle de productos entregados por remito
 router.get('/:remito_id/detalle', entregaController.detalleEntrega);
 
+// Registrar producto escaneado
+router.post('/registrar-producto', entregaController.registrarProductoEscaneado);
+
+// Finalizar entrega
+router.post('/finalizar', entregaController.finalizarEntrega);
+
 module.exports = router;

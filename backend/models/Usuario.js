@@ -1,8 +1,9 @@
 const db = require("../config/db");
 
 const Usuario = {
-  async getByNombre(nombre) {
-    const [rows] = await db.query("SELECT * FROM usuarios WHERE nombre = ?", [nombre]);
+  async getByEmail(email) {
+    
+    const [rows] = await db.query("SELECT * FROM usuarios WHERE email = ?", [email]);
     return rows[0];
   },
 

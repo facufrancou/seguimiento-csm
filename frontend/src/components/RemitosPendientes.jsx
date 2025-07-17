@@ -96,20 +96,20 @@ export default function RemitosPendientes() {
   };
 
   return (
-    <div className="container-fluid mt-4 px-2 w-100">
-      <h4>Remitos pendientes de entrega</h4>
+    <div className="container-fluid mt-4 px-2 w-100" style={{ backgroundColor: '#f8f9fa', borderRadius: '10px', padding: '20px' }}>
+      <h4 style={{ fontWeight: 'bold', color: '#343a40', textAlign: 'center' }}>Remitos pendientes de entrega</h4>
       {loading ? (
         <div className="text-center my-5">
           <div className="spinner-border text-primary" role="status" />
-          <p className="mt-3">Cargando datos...</p>
+          <p className="mt-3" style={{ fontSize: '16px', color: '#6c757d' }}>Cargando datos...</p>
         </div>
       ) : (
         <>
           {remitos.length === 0 ? (
-            <div className="alert alert-info mt-4">No hay remitos pendientes.</div>
+            <div className="alert alert-info mt-4" style={{ textAlign: 'center', fontWeight: 'bold' }}>No hay remitos pendientes.</div>
           ) : (
             <div className="table-responsive mt-3">
-              <table className="table table-striped table-bordered">
+              <table className="table table-striped table-bordered" style={{ borderRadius: '10px', overflow: 'hidden', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)' }}>
                 <thead className="table-dark">
                   <tr>
                     <th>#</th>
@@ -129,10 +129,21 @@ export default function RemitosPendientes() {
                         <td>{remito.fecha_emision ? new Date(remito.fecha_emision).toLocaleDateString() : ''}</td>
                         <td>{remito.numero_remito}</td>
                         <td>
-                          <Button variant="info" size="sm" className="me-2" onClick={() => handleVerRemito(remito)}>
+                          <Button
+                            variant="info"
+                            size="sm"
+                            className="me-2"
+                            onClick={() => handleVerRemito(remito)}
+                            style={{ fontWeight: 'bold', borderRadius: '5px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)', background: 'linear-gradient(90deg, #17a2b8, #117a8b)' }}
+                          >
                             Ver detalle
                           </Button>
-                          <Button variant="warning" size="sm" onClick={() => handleEditarRemito(remito)}>
+                          <Button
+                            variant="warning"
+                            size="sm"
+                            onClick={() => handleEditarRemito(remito)}
+                            style={{ fontWeight: 'bold', borderRadius: '5px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)', background: 'linear-gradient(90deg, #ffc107, #e0a800)' }}
+                          >
                             Editar
                           </Button>
                         </td>
@@ -145,79 +156,79 @@ export default function RemitosPendientes() {
         </>
       )}
       {/* Modal detalle remito */}
-      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Detalle del remito</Modal.Title>
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered style={{ borderRadius: '10px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)' }}>
+        <Modal.Header closeButton style={{ backgroundColor: '#343a40', color: '#fff', borderRadius: '10px 10px 0 0' }}>
+          <Modal.Title style={{ fontWeight: 'bold' }}>Detalle del remito</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body style={{ padding: '20px', backgroundColor: '#f8f9fa', borderRadius: '0 0 10px 10px' }}>
           {modalRemito && (
             <>
-              <p><b>Cliente:</b> {modalRemito.cliente}</p>
-              <p><b>Fecha:</b> {modalRemito.fecha_emision ? new Date(modalRemito.fecha_emision).toLocaleDateString() : ''}</p>
-              <p><b>N° Remito:</b> {modalRemito.numero_remito}</p>
+              <p><b style={{ color: '#495057' }}>Cliente:</b> {modalRemito.cliente}</p>
+              <p><b style={{ color: '#495057' }}>Fecha:</b> {modalRemito.fecha_emision ? new Date(modalRemito.fecha_emision).toLocaleDateString() : ''}</p>
+              <p><b style={{ color: '#495057' }}>N° Remito:</b> {modalRemito.numero_remito}</p>
             </>
           )}
           <hr />
-          <h6>Productos:</h6>
+          <h6 style={{ fontWeight: 'bold', color: '#343a40' }}>Productos:</h6>
           {detalle.length === 0 ? (
-            <p className="text-muted">No hay productos registrados para este remito.</p>
+            <p className="text-muted" style={{ textAlign: 'center' }}>No hay productos registrados para este remito.</p>
           ) : (
             <ul>
               {detalle.map((p, idx) => (
-                <li key={idx}>
+                <li key={idx} style={{ fontWeight: 'bold', color: '#495057' }}>
                   <b>{p.nombre}</b> - Cantidad: {p.cantidad} {p.unidad_medida || ''} {p.codigo_bit ? `| Código bit: ${p.codigo_bit}` : ''}
                 </li>
               ))}
             </ul>
           )}
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>Cerrar</Button>
+        <Modal.Footer style={{ backgroundColor: '#f8f9fa', borderRadius: '0 0 10px 10px' }}>
+          <Button variant="secondary" onClick={() => setShowModal(false)} style={{ fontWeight: 'bold', borderRadius: '5px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)' }}>Cerrar</Button>
         </Modal.Footer>
       </Modal>
       {/* Modal editar remito */}
-      <Modal show={showEditModal} onHide={() => setShowEditModal(false)} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Editar remito</Modal.Title>
+      <Modal show={showEditModal} onHide={() => setShowEditModal(false)} centered style={{ borderRadius: '10px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)' }}>
+        <Modal.Header closeButton style={{ backgroundColor: '#343a40', color: '#fff', borderRadius: '10px 10px 0 0' }}>
+          <Modal.Title style={{ fontWeight: 'bold' }}>Editar remito</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body style={{ padding: '20px', backgroundColor: '#f8f9fa', borderRadius: '0 0 10px 10px' }}>
           {editRemito && (
             <>
               <div className="mb-2">
-                <label className="form-label">Cliente</label>
-                <input className="form-control" value={editRemito.cliente_nombre} disabled style={{ background: '#eee' }} />
+                <label className="form-label" style={{ fontWeight: 'bold', color: '#343a40' }}>Cliente</label>
+                <input className="form-control" value={editRemito.cliente_nombre} disabled style={{ background: '#eee', borderRadius: '5px' }} />
               </div>
               <div className="mb-2">
-                <label className="form-label">Fecha</label>
-                <input className="form-control" value={editRemito.fecha_emision ? new Date(editRemito.fecha_emision).toLocaleDateString() : ''} disabled style={{ background: '#eee' }} />
+                <label className="form-label" style={{ fontWeight: 'bold', color: '#343a40' }}>Fecha</label>
+                <input className="form-control" value={editRemito.fecha_emision ? new Date(editRemito.fecha_emision).toLocaleDateString() : ''} disabled style={{ background: '#eee', borderRadius: '5px' }} />
               </div>
               <div className="mb-2">
-                <label className="form-label">N° Remito</label>
-                <input className="form-control" value={editRemito.numero_remito} disabled style={{ background: '#eee' }} />
+                <label className="form-label" style={{ fontWeight: 'bold', color: '#343a40' }}>N° Remito</label>
+                <input className="form-control" value={editRemito.numero_remito} disabled style={{ background: '#eee', borderRadius: '5px' }} />
               </div>
               <hr />
-              <h6>Productos</h6>
+              <h6 style={{ fontWeight: 'bold', color: '#343a40' }}>Productos</h6>
               {editDetalle.length === 0 ? (
-                <p className="text-muted">No hay productos registrados para este remito.</p>
+                <p className="text-muted" style={{ textAlign: 'center' }}>No hay productos registrados para este remito.</p>
               ) : (
                 <ul className="list-group mb-3">
                   {editDetalle.map((p, idx) => (
-                    <li key={idx} className="list-group-item d-flex justify-content-between align-items-center">
-                      <span><b>{p.nombre}</b> {p.unidad_medida ? `(${p.unidad_medida})` : ''} {p.codigo_bit ? `| Código bit: ${p.codigo_bit}` : ''}</span>
-                      <input type="number" min="0" step="any" className="form-control ms-2" style={{ width: 90 }} value={p.cantidad} onChange={e => handleCantidadChange(idx, e.target.value)} />
+                    <li key={idx} className="list-group-item d-flex justify-content-between align-items-center" style={{ borderRadius: '5px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)' }}>
+                      <span style={{ fontWeight: 'bold', color: '#495057' }}><b>{p.nombre}</b> {p.unidad_medida ? `(${p.unidad_medida})` : ''} {p.codigo_bit ? `| Código bit: ${p.codigo_bit}` : ''}</span>
+                      <input type="number" min="0" step="any" className="form-control ms-2" style={{ width: 90, borderRadius: '5px' }} value={p.cantidad} onChange={e => handleCantidadChange(idx, e.target.value)} />
                     </li>
                   ))}
                 </ul>
               )}
-              <h6>Operarios</h6>
+              <h6 style={{ fontWeight: 'bold', color: '#343a40' }}>Operarios</h6>
               {operarios.length === 0 ? (
-                <p className="text-muted">No hay operarios disponibles.</p>
+                <p className="text-muted" style={{ textAlign: 'center' }}>No hay operarios disponibles.</p>
               ) : (
                 <div className="mb-2">
                   {operarios.map(op => (
-                    <div className="form-check form-check-inline" key={op.id}>
+                    <div className="form-check form-check-inline" key={op.id} style={{ borderRadius: '5px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)' }}>
                       <input type="checkbox" className="form-check-input" id={`op-${op.id}`} checked={editOperarios.includes(op.id)} onChange={() => handleOperarioToggle(op.id)} />
-                      <label className="form-check-label" htmlFor={`op-${op.id}`}>{op.nombre}</label>
+                      <label className="form-check-label" htmlFor={`op-${op.id}`} style={{ fontWeight: 'bold', color: '#495057' }}>{op.nombre}</label>
                     </div>
                   ))}
                 </div>
@@ -225,10 +236,10 @@ export default function RemitosPendientes() {
             </>
           )}
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowEditModal(false)}>Cerrar</Button>
-          <Button variant="info" onClick={handleRegenerarQR}>Regenerar QR</Button>
-          <Button variant="primary" onClick={handleGuardarEdicion}>Guardar cambios</Button>
+        <Modal.Footer style={{ backgroundColor: '#f8f9fa', borderRadius: '0 0 10px 10px' }}>
+          <Button variant="secondary" onClick={() => setShowEditModal(false)} style={{ fontWeight: 'bold', borderRadius: '5px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)' }}>Cerrar</Button>
+          <Button variant="info" onClick={handleRegenerarQR} style={{ fontWeight: 'bold', borderRadius: '5px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)', background: 'linear-gradient(90deg, #17a2b8, #117a8b)' }}>Regenerar QR</Button>
+          <Button variant="primary" onClick={handleGuardarEdicion} style={{ fontWeight: 'bold', borderRadius: '5px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)', background: 'linear-gradient(90deg, #007bff, #0056b3)' }}>Guardar cambios</Button>
         </Modal.Footer>
       </Modal>
       {/* Modal QR generado */}

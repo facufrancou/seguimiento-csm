@@ -4,6 +4,8 @@ const Remito = require('../models/Remito');
 const RemitoProducto = require('../models/RemitoProducto');
 const Entrega = require('../models/Entrega');
 const Usuario = require('../models/Usuario');
+const EntregaDetalle = require('../models/EntregaDetalle');
+const Producto = require('../models/Producto');
 
 const entregaController = {
   // Validar token y traer info de remito y productos (modo solo lectura para QR)
@@ -85,6 +87,37 @@ const entregaController = {
     } catch (err) {
       res.status(500).json({ error: 'Error al obtener el detalle de productos' });
     }
+  },
+
+  async registrarProductoEscaneado(req, res) {
+    const { entrega_id, codigo_barra } = req.body;
+
+    // Validar que el producto existe
+    const producto = await Producto.getByCodigoBarra(codigo_barra);
+    if (!producto) {
+      return res.status(404).json({ error: 'Producto no encontrado' });
+    }
+
+    // Registrar escaneo
+    await EntregaDetalle.addProducto({
+      entrega_id,
+      producto_id: producto.id,
+      codigo_barra
+    });
+
+    res.json({ mensaje: 'Producto registrado correctamente', producto });
+  },
+
+  async finalizarEntrega(req, res) {
+    const { entrega_id } = req.body;
+
+    // Obtener resumen de productos escaneados
+    const productos = await EntregaDetalle.getByEntregaId(entrega_id);
+
+    // Actualizar estado de la entrega
+    await Entrega.updateEstado(entrega_id, 'finalizado');
+
+    res.json({ mensaje: 'Entrega finalizada correctamente', resumen: productos });
   }
 };
 

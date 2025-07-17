@@ -3,11 +3,11 @@ const Usuario = require('../models/Usuario');
 
 const authController = {
   async login(req, res) {
-    const { nombre, contraseña } = req.body;
-    console.log("Valor recibido:", req.body);
+    const { email, contraseña } = req.body;
+    
 
-    const usuario = await Usuario.getByNombre(nombre);
-    console.log("Usuario encontrado:", usuario);
+    const usuario = await Usuario.getByEmail(email);
+    
 
     if (!usuario) return res.status(404).json({ error: 'Usuario no encontrado' });
 
@@ -38,7 +38,7 @@ const authController = {
       const id = await Usuario.create({ nombre, email, contraseña: hash, rol });
       res.status(201).json({ mensaje: 'Usuario creado', id });
     } catch (err) {
-      console.error('Error al registrar usuario:', err);
+      
       res.status(500).json({ error: 'Error al registrar usuario' });
     }
   },
