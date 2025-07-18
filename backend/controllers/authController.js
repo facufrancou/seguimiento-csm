@@ -20,7 +20,14 @@ const authController = {
       nombre: usuario.nombre
     };
 
-    res.json({ mensaje: 'Login exitoso', usuario: req.session.user });
+    // Generar un token simple para mantener compatibilidad con el frontend
+    const token = Buffer.from(`${usuario.id}-${Date.now()}`).toString('base64');
+
+    res.json({ 
+      mensaje: 'Login exitoso', 
+      usuario: req.session.user,
+      token: token
+    });
   },
 
   logout(req, res) {

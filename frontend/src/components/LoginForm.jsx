@@ -2,12 +2,15 @@
 import React, { useState, useEffect } from 'react';
 import { login } from '../services/api';
 import { useNavigate } from 'react-router-dom';
+import './LoginForm.css'; // Importamos el archivo de estilos que crearemos
 
 export default function LoginForm() {
   const [usuario, setUsuario] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true); // Estado para la animación de carga
+  const [loading, setLoading] = useState(true); // Estado para la animación de carga inicial
+  const [loginSuccess, setLoginSuccess] = useState(false); // Estado para la animación de éxito
+  const [animationPhase, setAnimationPhase] = useState(''); // Para controlar las fases de la animación
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,11 +29,24 @@ export default function LoginForm() {
     }
 
     try {
-      const response = await login(usuario, password); // Cambiar email por usuario
-      localStorage.setItem('token', response.token); // Guardar el token en localStorage
-      localStorage.setItem('user', JSON.stringify(response.usuario)); // Guardar datos del usuario
-      setLoading(true); // Mostrar animación de carga
-      setTimeout(() => navigate('/'), 1500); // Pausa de 1.5 segundos antes de redirigir
+      const response = await login(usuario, password);
+      localStorage.setItem('token', response.token);
+      localStorage.setItem('user', JSON.stringify(response.usuario));
+      
+      // Iniciamos la secuencia de animación
+      setLoginSuccess(true);
+      setAnimationPhase('shrink');
+      
+      // Después de la animación de reducción, pasamos a la fase de celebración
+      setTimeout(() => {
+        setAnimationPhase('celebrate');
+        
+        // Finalmente, redirigimos al usuario
+        setTimeout(() => {
+          navigate('/');
+        }, 1500);
+      }, 1000);
+      
     } catch (err) {
       setError('Credenciales incorrectas o error de conexión.');
     }
@@ -38,66 +54,88 @@ export default function LoginForm() {
 
   if (loading) {
     return (
-      <div className="d-flex justify-content-center align-items-center" style={{ background: 'linear-gradient(135deg, #0f574e, #0a3d38)', position: 'absolute', top: '0', left: '0', width: '100%', height: '100%' }}>
-        <div className="spinner-border text-light" role="status">
-          <span className="visually-hidden">Cargando...</span>
+      <div className="login-container">
+        <div className="loading-spinner">
+          <div className="spinner"></div>
+          <p className="loading-text">Cargando aplicación</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="d-flex justify-content-center align-items-center" style={{ background: 'linear-gradient(135deg, #0f574e, #0a3d38)', position: 'absolute', top: '0', left: '0', width: '100%', height: '100%' }}>
-      <div className="card shadow-lg" style={{ width: '400px', borderRadius: '15px', overflow: 'hidden' }}>
-        <div className="card-body p-4">
-          <h3 className="mb-4 text-center" style={{ fontWeight: 'bold', color: '#0a3d38' }}>Iniciar Sesión</h3>
-          <div className="text-center mt-3" style={{ fontSize: '14px', color: '#6c757d' }}>
+    <div className="login-container">
+      <div className={`login-card ${loginSuccess ? animationPhase : ''}`}>
+        {/* Animación de celebración */}
+        {loginSuccess && animationPhase === 'celebrate' && (
+          <div className="celebration">
+            <div className="checkmark-container">
+              <svg className="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                <circle className="checkmark-circle" cx="26" cy="26" r="25" fill="none" />
+                <path className="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+              </svg>
+              <p className="success-message">Inicio exitoso</p>
+            </div>
+          </div>
+        )}
+        
+        {/* Contenido del formulario */}
+        <div className="card-body">
+          <h3 className="login-title">
+            <i className="fas fa-user-circle"></i>
+            Iniciar Sesión
+          </h3>
+          <div className="login-subtitle">
             <p>Seguimiento de Entregas - Coop. Gral. San Martín</p>
           </div>
+          
           {error && (
-            <div className="alert alert-danger" style={{ borderRadius: '5px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)' }}>
-              {error}
+            <div className="login-alert">
+              <i className="fas fa-exclamation-circle"></i> {error}
             </div>
-            
           )}
-          <form onSubmit={handleSubmit}>
-            <div className="mb-3">
-              <label className="form-label" style={{ fontWeight: 'bold', color: '#0a3d38' }}>Usuario</label>
+          
+          <form onSubmit={handleSubmit} className={loginSuccess ? 'form-disable' : ''}>
+            <div className="form-group">
+              <label className="form-label">
+                <i className="fas fa-user"></i> Usuario
+              </label>
               <input
                 type="text"
                 className="form-control"
                 value={usuario}
                 onChange={(e) => setUsuario(e.target.value)}
                 required
-                style={{ borderRadius: '5px', borderColor: '#0f574e' }}
+                disabled={loginSuccess}
               />
             </div>
-            <div className="mb-3">
-              <label className="form-label" style={{ fontWeight: 'bold', color: '#0a3d38' }}>Contraseña</label>
+            <div className="form-group">
+              <label className="form-label">
+                <i className="fas fa-lock"></i> Contraseña
+              </label>
               <input
                 type="password"
                 className="form-control"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                style={{ borderRadius: '5px', borderColor: '#0f574e' }}
+                disabled={loginSuccess}
               />
             </div>
             <button
               type="submit"
-              className="btn btn-success w-100"
-              style={{
-                fontWeight: 'bold',
-                borderRadius: '5px',
-                boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
-                background: 'linear-gradient(90deg, #0f574e, #0a3d38)',
-                color: '#fff'
-              }}
+              className="login-button"
+              disabled={loginSuccess}
             >
-              Ingresar
+              {loginSuccess ? (
+                <div className="spinner-border spinner-border-sm" role="status">
+                  <span className="visually-hidden">Cargando...</span>
+                </div>
+              ) : (
+                <><i className="fas fa-sign-in-alt"></i> Ingresar</>
+              )}
             </button>
           </form>
-          
         </div>
       </div>
     </div>

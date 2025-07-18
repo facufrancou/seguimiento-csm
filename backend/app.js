@@ -27,7 +27,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(session({
   secret: process.env.SESSION_SECRET || 'seguimiento123',
   resave: false,
-  saveUninitialized: true
+  saveUninitialized: true,
+  cookie: {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production', // true en producción para HTTPS
+    maxAge: 24 * 60 * 60 * 1000 // 24 horas
+  }
 }));
 
 // Rutas

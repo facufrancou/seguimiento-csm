@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Button, Card, Alert, Container } from 'react-bootstrap';
+import { Form, Button, Alert } from 'react-bootstrap';
 import { registrarUsuario } from '../services/api';
 import { hasPermission } from '../utils/roleValidator';
 
@@ -39,50 +39,87 @@ export default function AltaUsuario() {
   };
 
   return (
-    <Container fluid className="py-4 px-2 w-100" style={{ backgroundColor: '#fff', borderRadius: '10px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)' }}>
-      <Card>
-        <Card.Body>
-          <h4 className="mb-3" style={{ fontWeight: 'bold', color: '#0a3d38' }}>Alta de Usuario / Operario</h4>
-          <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-3">
-              <Form.Label style={{ fontWeight: 'bold', color: '#0a3d38' }}>Nombre</Form.Label>
-              <Form.Control value={nombre} onChange={e => setNombre(e.target.value)} required style={{ borderRadius: '5px', borderColor: '#0f574e' }} />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label style={{ fontWeight: 'bold', color: '#0a3d38' }}>Email</Form.Label>
-              <Form.Control type="text" value={email} onChange={e => setEmail(e.target.value)} required style={{ borderRadius: '5px', borderColor: '#0f574e' }} />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label style={{ fontWeight: 'bold', color: '#0a3d38' }}>Contraseña</Form.Label>
-              <Form.Control type="password" value={password} onChange={e => setPassword(e.target.value)} required style={{ borderRadius: '5px', borderColor: '#0f574e' }} />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label style={{ fontWeight: 'bold', color: '#0a3d38' }}>Rol</Form.Label>
-              <Form.Select value={rol} onChange={e => setRol(e.target.value)} style={{ borderRadius: '5px', borderColor: '#0f574e' }}>
-                <option value="operario">Operario</option>
-                <option value="admin">Admin</option>
-              </Form.Select>
-            </Form.Group>
-            {msg && <Alert variant="success" style={{ borderRadius: '5px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)' }}>{msg}</Alert>}
-            {error && <Alert variant="danger" style={{ borderRadius: '5px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)' }}>{error}</Alert>}
-            <Button
-              type="submit"
-              variant="primary"
-              disabled={loading}
-              className="w-100"
-              style={{
-                fontWeight: 'bold',
-                borderRadius: '5px',
-                boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
-                background: 'linear-gradient(90deg, #0f574e, #0a3d38)',
-                color: '#fff'
-              }}
-            >
-              {loading ? 'Creando...' : 'Crear usuario'}
-            </Button>
-          </Form>
-        </Card.Body>
-      </Card>
-    </Container>
+    <div className="productos-view">
+      <div className="container">
+        <h1 className="productos-title">Gestión de Usuarios</h1>
+        <div className="card">
+          <div className="card-body">
+            <Form onSubmit={handleSubmit}>
+              <Form.Group className="form-group">
+                <Form.Label className="form-label">
+                  <i className="fas fa-user"></i> Nombre
+                </Form.Label>
+                <Form.Control 
+                  className="form-control"
+                  value={nombre} 
+                  onChange={e => setNombre(e.target.value)} 
+                  required 
+                />
+              </Form.Group>
+              
+              <Form.Group className="form-group">
+                <Form.Label className="form-label">
+                  <i className="fas fa-envelope"></i> Email
+                </Form.Label>
+                <Form.Control 
+                  type="email" 
+                  className="form-control"
+                  value={email} 
+                  onChange={e => setEmail(e.target.value)} 
+                  required 
+                />
+              </Form.Group>
+              
+              <Form.Group className="form-group">
+                <Form.Label className="form-label">
+                  <i className="fas fa-lock"></i> Contraseña
+                </Form.Label>
+                <Form.Control 
+                  type="password" 
+                  className="form-control"
+                  value={password} 
+                  onChange={e => setPassword(e.target.value)} 
+                  required 
+                />
+              </Form.Group>
+              
+              <Form.Group className="form-group">
+                <Form.Label className="form-label">
+                  <i className="fas fa-user-tag"></i> Rol
+                </Form.Label>
+                <Form.Select 
+                  className="form-control"
+                  value={rol} 
+                  onChange={e => setRol(e.target.value)}
+                >
+                  <option value="operario">Operario</option>
+                  <option value="admin">Admin</option>
+                </Form.Select>
+              </Form.Group>
+              
+              {msg && <Alert variant="success" className="alert alert-success">{msg}</Alert>}
+              {error && <Alert variant="danger" className="alert alert-danger">{error}</Alert>}
+              
+              <Button
+                type="submit"
+                variant="primary"
+                disabled={loading}
+                className="btn btn-primary"
+              >
+                {loading ? (
+                  <>
+                    <i className="fas fa-spinner fa-spin"></i> Creando...
+                  </>
+                ) : (
+                  <>
+                    <i className="fas fa-user-plus"></i> Crear usuario
+                  </>
+                )}
+              </Button>
+            </Form>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

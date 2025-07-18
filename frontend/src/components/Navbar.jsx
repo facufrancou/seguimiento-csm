@@ -50,6 +50,7 @@ export default function Navbar() {
           <Link className={`nav-link ${isActive('/reportes') ? 'active' : ''}`} to="/reportes" style={{ color: '#fff' }}>Reportes</Link>
           <Link className={`nav-link ${isActive('/alta-usuario') ? 'active' : ''}`} to="/alta-usuario" style={{ color: '#fff' }}>Usuarios</Link>
           <Link className={`nav-link ${isActive('/remitos-pendientes') ? 'active' : ''}`} to="/remitos-pendientes" style={{ color: '#fff' }}>Remitos pendientes</Link>
+          <Link className={`nav-link ${isActive('/productos') ? 'active' : ''}`} to="/productos" style={{ color: '#fff' }}>Productos</Link>
         </div>
         {isLoggedIn && (
           <div className="navbar-text text-light me-3 d-flex align-items-center">
@@ -58,8 +59,12 @@ export default function Navbar() {
           </div>
         )}
         {isLoggedIn && (
-          <button className="btn btn-outline-light btn-sm" onClick={handleLogout} style={{ borderRadius: '5px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)' }}>
-            Cerrar sesión
+          <button className="btn btn-outline-light btn-sm me-3" onClick={handleLogout} style={{ 
+            borderRadius: '5px', 
+            boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+            marginRight: 'var(--spacing-lg)'
+          }}>
+            <i className="fas fa-sign-out-alt me-1"></i> Cerrar sesión
           </button>
         )}
       </div>

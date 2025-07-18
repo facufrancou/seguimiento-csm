@@ -1,0 +1,188 @@
+/* Estilos para el formulario de login */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.login-card {
+  width: 400px;
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  background-color: white;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  transition: all 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.login-card .card-body {
+  padding: var(--spacing-xl);
+}
+
+.login-title {
+  text-align: center;
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-bottom: var(--spacing-lg);
+}
+
+.login-title i {
+  font-size: 2rem;
+  margin-bottom: var(--spacing-md);
+  display: block;
+}
+
+.login-subtitle {
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-lg);
+}
+
+.login-alert {
+  background-color: #f8d7da;
+  color: #842029;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: var(--spacing-md);
+  border-radius: var(--border-radius-sm);
+  border: 1px solid #f5c2c7;
+}
+
+.login-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  padding: 0.5rem 1rem;
+  width: 100%;
+  margin-top: var(--spacing-lg);
+  cursor: pointer;
+  font-weight: 500;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 42px;
+  transition: background-color 0.2s;
+}
+
+.login-button:hover {
+  background-color: var(--primary-dark);
+}
+
+.login-button:disabled {
+  background-color: var(--primary-light);
+  cursor: not-allowed;
+}
+
+/* Animaciones */
+@keyframes shrink {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+}
+
+@keyframes celebrate {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.login-card.shrink {
+  animation: shrink 0.5s forwards;
+}
+
+.login-card.celebrate {
+  animation: celebrate 0.7s forwards;
+  background-color: #ffffff;
+}
+
+.form-disable {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Checkmark animation */
+.celebration {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.9);
+  z-index: 10;
+}
+
+.checkmark-container {
+  text-align: center;
+}
+
+.checkmark {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto;
+  display: block;
+}
+
+.checkmark-circle {
+  stroke: var(--primary-color);
+  stroke-width: 2;
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  fill: none;
+  animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.checkmark-check {
+  stroke: var(--primary-color);
+  stroke-width: 2;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: stroke 0.4s cubic-bezier(0.65, 0, 0.45, 1) 0.5s forwards;
+}
+
+@keyframes stroke {
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.success-message {
+  margin-top: var(--spacing-md);
+  color: var(--primary-color);
+  font-weight: 600;
+  animation: fadeIn 0.8s 0.6s forwards;
+  opacity: 0;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

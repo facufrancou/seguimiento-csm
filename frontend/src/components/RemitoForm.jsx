@@ -306,33 +306,45 @@ export default function RemitoForm() {
   };
 
   return (
-    <div className="container-fluid mt-4 px-2 w-100">
-      <h4 className="mb-3" style={{ fontWeight: 'bold', color: '#343a40' }}>Cargar nuevo remito</h4>
-      {/* Modo de carga */}
-      <div className="mb-3">
-        <label className="form-label" style={{ fontWeight: 'bold', color: '#6c757d' }}>Modo de carga</label>
-        <select className="form-control" value={modoCarga} onChange={e => setModoCarga(e.target.value)} style={{ borderColor: '#6c757d', borderRadius: '5px' }}>
-          <option value="manual">Carga manual</option>
-          <option value="pdf">Cargar desde PDF</option>
-        </select>
-      </div>
+    <div className="productos-view">
+      <div className="container">
+        <h1 className="productos-title">Cargar nuevo remito</h1>
+        
+        {/* Modo de carga */}
+        <div className="card">
+          <div className="card-body">
+            <div className="form-group">
+              <label className="form-label">
+                <i className="fas fa-file-import"></i> Modo de carga
+              </label>
+              <select className="form-control" value={modoCarga} onChange={e => setModoCarga(e.target.value)}>
+                <option value="manual">Carga manual</option>
+                <option value="pdf">Cargar desde PDF</option>
+              </select>
+            </div>
+
+            {modoCarga === 'pdf' && (
+              <div className="form-group">
+                <label className="form-label">
+                  <i className="fas fa-file-pdf"></i> Cargar PDF de remito
+                </label>
+                <input type="file" className="form-control" accept="application/pdf" onChange={handlePDFChange} />
+                <small className="form-text text-muted">
+                  <i className="fas fa-info-circle"></i> Puede que algún artículo no se lea correctamente. Revisá y completá manualmente si es necesario.
+                </small>
+              </div>
+            )}
       {modoCarga === 'pdf' && (
-        <div className="mb-3">
-          <label className="form-label" style={{ fontWeight: 'bold', color: '#6c757d' }}>Cargar PDF de remito</label>
-          <input type="file" className="form-control" accept="application/pdf" onChange={handlePDFChange} style={{ borderColor: '#6c757d', borderRadius: '5px' }} />
-          <small className="text-muted">Puede que algún artículo no se lea correctamente. Revisá y completá manualmente si es necesario.</small>
-        </div>
-      )}
-      {modoCarga === 'pdf' && (
-        <form onSubmit={handleSubmit} style={{ backgroundColor: '#f8f9fa', padding: '20px', borderRadius: '10px' }}>
-          <div className="mb-3">
-            <label className="form-label" style={{ fontWeight: 'bold', color: '#6c757d' }}>Cliente</label>
+        <form onSubmit={handleSubmit} className="form-container">
+          <div className="form-group">
+            <label className="form-label">
+              <i className="fas fa-building"></i> Cliente
+            </label>
             <select
               className="form-control"
               value={clienteId}
               onChange={(e) => setClienteId(e.target.value)}
               required
-              style={{ borderColor: '#6c757d', borderRadius: '5px' }}
             >
               <option value="">Seleccioná un cliente</option>
               {clientes.map((cliente) => (
@@ -343,8 +355,10 @@ export default function RemitoForm() {
             </select>
           </div>
 
-          <div className="mb-3">
-            <label className="form-label" style={{ fontWeight: 'bold', color: '#6c757d' }}>Fecha</label>
+          <div className="form-group">
+            <label className="form-label">
+              <i className="fas fa-calendar-alt"></i> Fecha
+            </label>
             <input
               type="date"
               className="form-control"
@@ -353,172 +367,63 @@ export default function RemitoForm() {
               required
               inputMode="none"
               placeholder="Seleccioná una fecha"
-              style={{ borderColor: '#6c757d', borderRadius: '5px' }}
             />
           </div>
 
-          <div className="mb-3">
-            <label className="form-label d-block" style={{ fontWeight: 'bold', color: '#6c757d' }}>Productos</label>
-            <div className="mb-3 d-flex gap-2 align-items-center">
+          <div className="form-group">
+            <label className="form-label">
+              <i className="fas fa-box"></i> Productos
+            </label>
+            <div className="button-group mb-3">
               <button
                 type="button"
-                className="btn btn-outline-primary"
+                className="btn btn-primary me-2"
                 onClick={abrirModalProductos}
-                style={{
-                  fontWeight: 'bold',
-                  borderRadius: '5px',
-                  boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
-                  background: 'linear-gradient(90deg, #0f574e, #0a3d38)',
-                  color: '#fff'
-                }}
               >
-                Agregar o modificar productos
+                <i className="fas fa-plus"></i> Agregar o modificar productos
               </button>
-              <button type="button" className="btn btn-outline-secondary" onClick={() => setShowProductoManual(true)} style={{ fontWeight: 'bold' }}>
-                Agregar producto a la base
+              <button 
+                type="button" 
+                className="btn btn-secondary"
+                onClick={() => setShowProductoManual(true)}
+              >
+                <i className="fas fa-database"></i> Agregar producto a la base
               </button>
             </div>
 
             {productosSeleccionados.length > 0 ? (
-              <ul className="list-group">
+              <ul className="product-list">
                 {productosSeleccionados.map((p, idx) => (
-                  <li key={idx} className="list-group-item d-flex justify-content-between align-items-center" style={{ border: '1px solid #dee2e6', borderRadius: '5px', marginBottom: '5px' }}>
-                    <div className="d-flex flex-column">
-                      <span className="fw-bold" style={{ color: '#495057' }}>{p.nombre ? p.nombre : `ID: ${p.producto_id}`}</span>
-                      <small className="text-muted">
+                  <li key={idx} className="product-item">
+                    <div className="product-details">
+                      <span className="product-name">{p.nombre ? p.nombre : `ID: ${p.producto_id}`}</span>
+                      <small className="product-info">
                         {p.unidad_medida ? `Unidad: ${p.unidad_medida}` : ''}
                         {p.codigo_bit !== undefined && p.codigo_bit !== null ? ` | Código bit: ${p.codigo_bit}` : ''}
                       </small>
                     </div>
-                    <span className="badge bg-secondary fs-6" style={{ fontWeight: 'bold' }}>{p.cantidad}</span>
+                    <span className="product-quantity">{p.cantidad}</span>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="text-muted">No se han seleccionado productos.</p>
+              <p className="empty-message">
+                <i className="fas fa-info-circle"></i> No se han seleccionado productos.
+              </p>
             )
             }
           </div>
 
-          <div className="mb-3">
-            <label className="form-label" style={{ fontWeight: 'bold', color: '#6c757d' }}>Operarios responsables</label>
-            <div>
-              {operarios.length === 0 && <div className="text-muted">No hay operarios disponibles.</div>}
-              {operarios.map(op => (
-                <div className="form-check" key={op.id}>
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    id={`operario-${op.id}`}
-                    value={op.id}
-                    checked={operarioIds.includes(String(op.id))}
-                    onChange={e => {
-                      if (e.target.checked) {
-                        setOperarioIds([...operarioIds, String(op.id)]);
-                      } else {
-                        setOperarioIds(operarioIds.filter(id => id !== String(op.id)));
-                      }
-                    }}
-                  />
-                  <label className="form-check-label" htmlFor={`operario-${op.id}`} style={{ color: '#495057' }}>{op.nombre}</label>
+          <div className="form-group">
+            <label className="form-label">
+              <i className="fas fa-users"></i> Operarios responsables
+            </label>
+            <div className="operarios-container">
+              {operarios.length === 0 && (
+                <div className="empty-message">
+                  <i className="fas fa-exclamation-circle"></i> No hay operarios disponibles.
                 </div>
-              ))}
-            </div>
-            <small className="text-muted">Podés seleccionar uno o más operarios.</small>
-          </div>
-
-          <button type="submit" className="btn btn-success w-100" style={{ fontWeight: 'bold' }}>
-            Guardar Remito
-          </button>
-        </form>
-      )}
-      {modoCarga === 'manual' && (
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label className="form-label">Cliente</label>
-            <div className="input-group">
-              <select
-                className="form-control"
-                value={clienteId}
-                onChange={e => setClienteId(e.target.value)}
-                required
-              >
-                <option value="">Seleccioná un cliente</option>
-                {clientes.map((cliente) => (
-                  <option key={cliente.id} value={cliente.id}>
-                    {cliente.nombre}{cliente.cuit ? ` (${cliente.cuit})` : ''}
-                  </option>
-                ))}
-              </select>
-              <button
-                type="button"
-                className="btn btn-outline-secondary"
-                style={{ minWidth: 120 }}
-                onClick={() => {
-                  setClientePendiente({ nombre: '', cuit: '', domicilio: '', localidad: '', condicion_iva: '' });
-                  setShowNuevoCliente(true);
-                }}
-              >
-                Nuevo cliente
-              </button>
-            </div>
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Fecha</label>
-            <input
-              type="date"
-              className="form-control"
-              value={fecha || ''}
-              onChange={e => setFecha(e.target.value)}
-              required
-              inputMode="none"
-              placeholder="Seleccioná una fecha"
-            />
-          </div>
-          <div className="mb-3">
-            <label className="form-label d-block">Productos</label>
-            <div className="mb-3 d-flex gap-2 align-items-center">
-              <button
-                type="button"
-                className="btn btn-outline-primary"
-                onClick={abrirModalProductos}
-                style={{
-                  fontWeight: 'bold',
-                  borderRadius: '5px',
-                  boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
-                  background: 'linear-gradient(90deg, #0f574e, #0a3d38)',
-                  color: '#fff'
-                }}
-              >
-                Agregar o modificar productos
-              </button>
-              <button type="button" className="btn btn-outline-secondary" onClick={() => setShowProductoManual(true)}>
-                Agregar producto a la base
-              </button>
-            </div>
-            {productosSeleccionados.length > 0 ? (
-              <ul className="list-group">
-                {productosSeleccionados.map((p, idx) => (
-                  <li key={idx} className="list-group-item d-flex justify-content-between align-items-center">
-                    <div className="d-flex flex-column">
-                      <span className="fw-bold">{p.nombre ? p.nombre : `ID: ${p.producto_id}`}</span>
-                      <small className="text-muted">
-                        {p.unidad_medida ? `Unidad: ${p.unidad_medida}` : ''}
-                        {p.codigo_bit !== undefined && p.codigo_bit !== null ? ` | Código bit: ${p.codigo_bit}` : ''}
-                      </small>
-                    </div>
-                    <span className="badge bg-secondary fs-6">{p.cantidad}</span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-muted">No se han seleccionado productos.</p>
-            )}
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Operarios responsables</label>
-            <div>
-              {operarios.length === 0 && <div className="text-muted">No hay operarios disponibles.</div>}
+              )}
               {operarios.map(op => (
                 <div className="form-check" key={op.id}>
                   <input
@@ -539,10 +444,144 @@ export default function RemitoForm() {
                 </div>
               ))}
             </div>
-            <small className="text-muted">Podés seleccionar uno o más operarios.</small>
+            <small className="form-text text-muted">
+              <i className="fas fa-info-circle"></i> Podés seleccionar uno o más operarios.
+            </small>
           </div>
-          <button type="submit" className="btn btn-success w-100">
-            Guardar Remito
+
+          <button type="submit" className="btn btn-primary mt-3">
+            <i className="fas fa-save"></i> Guardar Remito
+          </button>
+        </form>
+      )}
+      {modoCarga === 'manual' && (
+        <form onSubmit={handleSubmit} className="form-container">
+          <div className="form-group">
+            <label className="form-label">
+              <i className="fas fa-building"></i> Cliente
+            </label>
+            <div className="input-group">
+              <select
+                className="form-control"
+                value={clienteId}
+                onChange={e => setClienteId(e.target.value)}
+                required
+              >
+                <option value="">Seleccioná un cliente</option>
+                {clientes.map((cliente) => (
+                  <option key={cliente.id} value={cliente.id}>
+                    {cliente.nombre}{cliente.cuit ? ` (${cliente.cuit})` : ''}
+                  </option>
+                ))}
+              </select>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => {
+                  setClientePendiente({ nombre: '', cuit: '', domicilio: '', localidad: '', condicion_iva: '' });
+                  setShowNuevoCliente(true);
+                }}
+              >
+                <i className="fas fa-plus"></i> Nuevo cliente
+              </button>
+            </div>
+          </div>
+          
+          <div className="form-group">
+            <label className="form-label">
+              <i className="fas fa-calendar-alt"></i> Fecha
+            </label>
+            <input
+              type="date"
+              className="form-control"
+              value={fecha || ''}
+              onChange={e => setFecha(e.target.value)}
+              required
+              inputMode="none"
+              placeholder="Seleccioná una fecha"
+            />
+          </div>
+          
+          <div className="form-group">
+            <label className="form-label">
+              <i className="fas fa-box"></i> Productos
+            </label>
+            <div className="button-group mb-3">
+              <button
+                type="button"
+                className="btn btn-primary me-2"
+                onClick={abrirModalProductos}
+              >
+                <i className="fas fa-plus"></i> Agregar o modificar productos
+              </button>
+              <button 
+                type="button" 
+                className="btn btn-secondary" 
+                onClick={() => setShowProductoManual(true)}
+              >
+                <i className="fas fa-database"></i> Agregar producto a la base
+              </button>
+            </div>
+            
+            {productosSeleccionados.length > 0 ? (
+              <ul className="product-list">
+                {productosSeleccionados.map((p, idx) => (
+                  <li key={idx} className="product-item">
+                    <div className="product-details">
+                      <span className="product-name">{p.nombre ? p.nombre : `ID: ${p.producto_id}`}</span>
+                      <small className="product-info">
+                        {p.unidad_medida ? `Unidad: ${p.unidad_medida}` : ''}
+                        {p.codigo_bit !== undefined && p.codigo_bit !== null ? ` | Código bit: ${p.codigo_bit}` : ''}
+                      </small>
+                    </div>
+                    <span className="product-quantity">{p.cantidad}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="empty-message">
+                <i className="fas fa-info-circle"></i> No se han seleccionado productos.
+              </p>
+            )}
+          </div>
+          
+          <div className="form-group">
+            <label className="form-label">
+              <i className="fas fa-users"></i> Operarios responsables
+            </label>
+            <div className="operarios-container">
+              {operarios.length === 0 && (
+                <div className="empty-message">
+                  <i className="fas fa-exclamation-circle"></i> No hay operarios disponibles.
+                </div>
+              )}
+              {operarios.map(op => (
+                <div className="form-check" key={op.id}>
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id={`operario-${op.id}`}
+                    value={op.id}
+                    checked={operarioIds.includes(String(op.id))}
+                    onChange={e => {
+                      if (e.target.checked) {
+                        setOperarioIds([...operarioIds, String(op.id)]);
+                      } else {
+                        setOperarioIds(operarioIds.filter(id => id !== String(op.id)));
+                      }
+                    }}
+                  />
+                  <label className="form-check-label" htmlFor={`operario-${op.id}`}>{op.nombre}</label>
+                </div>
+              ))}
+            </div>
+            <small className="form-text text-muted">
+              <i className="fas fa-info-circle"></i> Podés seleccionar uno o más operarios.
+            </small>
+          </div>
+          
+          <button type="submit" className="btn btn-primary mt-3">
+            <i className="fas fa-save"></i> Guardar Remito
           </button>
         </form>
       )}
@@ -558,28 +597,30 @@ export default function RemitoForm() {
       />
 
       {/* Modal para mostrar el QR */}
-      <Modal show={showQRModal} onHide={() => setShowQRModal(false)}>
+      <Modal show={showQRModal} onHide={() => setShowQRModal(false)} centered className="custom-modal">
         <Modal.Header closeButton>
           <Modal.Title>QR para validación</Modal.Title>
         </Modal.Header>
         <Modal.Body className="text-center">
-          <ReactQRCode value={qrUrl} size={180} />
-          <div className="mt-2"><small>{qrUrl}</small></div>
+          <div className="qr-container">
+            <ReactQRCode value={qrUrl} size={180} />
+            <div className="mt-2 qr-url"><small>{qrUrl}</small></div>
+          </div>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowQRModal(false)}>
-            Cerrar
+            <i className="fas fa-times"></i> Cerrar
           </Button>
           <Button variant="primary" onClick={handlePrintQR}>
-            Imprimir
+            <i className="fas fa-print"></i> Imprimir
           </Button>
         </Modal.Footer>
       </Modal>
 
       {/* Modal de selección de productos */}
-      <Modal show={modalProductosOpen} onHide={cerrarModalProductos} size="lg" backdrop="static" centered>
+      <Modal show={modalProductosOpen} onHide={cerrarModalProductos} size="lg" backdrop="static" centered className="custom-modal">
         <Modal.Header closeButton>
-          <Modal.Title>Seleccionar productos</Modal.Title>
+          <Modal.Title><i className="fas fa-box"></i> Seleccionar productos</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <ProductoChecklist
@@ -644,11 +685,15 @@ export default function RemitoForm() {
       />
 
       {success && (
-        <div className="alert alert-success alert-dismissible fade show" role="alert">
-          {success}
+        <div className="alert alert-success" role="alert">
+          <i className="fas fa-check-circle"></i> {success}
           <button type="button" className="btn-close" aria-label="Close" onClick={() => setSuccess('')}></button>
         </div>
       )}
+      
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

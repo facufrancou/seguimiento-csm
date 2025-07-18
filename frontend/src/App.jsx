@@ -8,6 +8,7 @@ import Navbar from './components/Navbar';
 import LoginForm from './components/LoginForm';
 import AltaUsuario from './views/AltaUsuario';
 import RemitosPendientes from './components/RemitosPendientes';
+import Productos from './views/Productos';
 
 function PrivateRoute({ children }) {
   const isLoggedIn = localStorage.getItem('token');
@@ -31,6 +32,7 @@ function AppContent() {
           <Route path="/remitos-pendientes" element={<PrivateRoute><RemitosPendientes /></PrivateRoute>} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/alta-usuario" element={<PrivateRoute><AltaUsuario /></PrivateRoute>} />
+          <Route path="/productos" element={<PrivateRoute><Productos /></PrivateRoute>} />
         </Routes>
       </div>
     </>

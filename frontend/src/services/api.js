@@ -10,6 +10,17 @@ const api = axios.create({
   withCredentials: true, // útil si usás sesiones/cookies
 });
 
+// Interceptor para agregar token de autorización a todas las solicitudes
+api.interceptors.request.use(config => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+}, error => {
+  return Promise.reject(error);
+});
+
 // 📦 ENDPOINTS: Ejemplos básicos
 
 // Login de usuario
@@ -110,6 +121,12 @@ export const getRemitosPendientes = async () => {
 // Obtener detalle de productos de un remito
 export const getDetalleRemito = async (remitoId) => {
   const response = await api.get(`/api/entregas/${remitoId}/detalle`);
+  return response.data;
+};
+
+// Actualizar producto
+export const updateProducto = async (id, data) => {
+  const response = await api.put(`/api/productos/${id}`, data);
   return response.data;
 };
 

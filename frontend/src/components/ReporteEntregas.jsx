@@ -110,59 +110,57 @@ export default function ReporteEntregas() {
   };
 
   return (
-    <div className="container-fluid mt-4 px-2 w-100" style={{ backgroundColor: '#f8f9fa', borderRadius: '10px', padding: '20px' }}>
-      <h4 style={{ fontWeight: 'bold', color: '#343a40', textAlign: 'center' }}>Reporte de Entregas</h4>
-      <div className="mt-4 w-100 d-flex flex-column align-items-center">
+    <div>
+      <div className="search-section">
         <input
           type="text"
-          className="form-control mb-4"
+          className="search-input"
           placeholder="Buscar por cliente"
-          style={{ maxWidth: '400px', borderColor: '#6c757d', borderRadius: '5px' }}
           value={filtroCliente}
           onChange={(e) => setFiltroCliente(e.target.value)}
         />
-        <div className="d-flex gap-3">
-          <Form.Group controlId="fechaInicio" style={{ maxWidth: '180px' }}>
-            <Form.Label>Fecha inicio</Form.Label>
-            <DatePicker
-              selected={fechaInicio}
-              onChange={(date) => setFechaInicio(date)}
-              dateFormat="dd/MM/yyyy"
-              className="form-control"
-              style={{ borderColor: '#6c757d', borderRadius: '5px' }}
-            />
-          </Form.Group>
+      </div>
+      
+      <div className="d-flex gap-3 mb-4 justify-content-center">
+        <Form.Group controlId="fechaInicio" style={{ maxWidth: '180px' }}>
+          <Form.Label className="form-label">Fecha inicio</Form.Label>
+          <DatePicker
+            selected={fechaInicio}
+            onChange={(date) => setFechaInicio(date)}
+            dateFormat="dd/MM/yyyy"
+            className="form-control"
+          />
+        </Form.Group>
 
-          <Form.Group controlId="fechaFin" style={{ maxWidth: '180px' }}>
-            <Form.Label>Fecha fin</Form.Label>
-            <DatePicker
-              selected={fechaFin}
-              onChange={(date) => setFechaFin(date)}
-              dateFormat="dd/MM/yyyy"
-              className="form-control"
-              style={{ borderColor: '#6c757d', borderRadius: '5px' }}
-            />
-          </Form.Group>
-        </div>
-        <div className="d-flex justify-content-center gap-3 mt-4">
-          <Button
-            variant="primary"
-            onClick={async () => {
-              await filtrarEntregas();
-            }}
-            style={{ fontWeight: 'bold', width: '200px', height: '50px', borderRadius: '8px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)', background: 'linear-gradient(90deg, #007bff, #0056b3)' }}
-          >
-            Ver Todo
-          </Button>
+        <Form.Group controlId="fechaFin" style={{ maxWidth: '180px' }}>
+          <Form.Label className="form-label">Fecha fin</Form.Label>
+          <DatePicker
+            selected={fechaFin}
+            onChange={(date) => setFechaFin(date)}
+            dateFormat="dd/MM/yyyy"
+            className="form-control"
+          />
+        </Form.Group>
+      </div>
+      
+      <div className="d-flex justify-content-center gap-3 mt-4">
+        <Button
+          variant="primary"
+          className="btn btn-primary"
+          onClick={async () => {
+            await filtrarEntregas();
+          }}
+        >
+          <i className="fas fa-search"></i> Ver Todo
+        </Button>
 
-          <Button
-            variant="primary"
-            onClick={handleLimpiarFiltros}
-            style={{ fontWeight: 'bold', width: '200px', height: '50px', borderRadius: '8px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)', background: 'linear-gradient(90deg, #007bff, #0056b3)' }}
-          >
-            Limpiar filtros
-          </Button>
-        </div>
+        <Button
+          variant="secondary"
+          className="btn btn-secondary"
+          onClick={handleLimpiarFiltros}
+        >
+          <i className="fas fa-times"></i> Limpiar filtros
+        </Button>
       </div>
       {loading ? (
         <div className="text-center my-5">
@@ -175,35 +173,32 @@ export default function ReporteEntregas() {
             <div className="alert alert-info mt-4" style={{ textAlign: 'center', fontWeight: 'bold' }}>No hay entregas registradas.</div>
           ) : (
             <div className="table-responsive mt-3">
-              <table className="table table-striped table-bordered" style={{ borderRadius: '10px', overflow: 'hidden' }}>
+              <table className="table table-striped table-bordered" style={{ borderRadius: '10px', overflow: 'hidden', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)' }}>
                 <thead className="table-dark">
                   <tr>
                     <th>#</th>
                     <th>Cliente</th>
                     <th>Fecha</th>
-                    <th>Productos entregados</th>
+                    <th>N° Remito</th>
+                    <th>Operario</th>
+                    <th>Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
                   {entregas.map((entrega, i) => (
                     <tr key={i}>
                       <td>{i + 1}</td>
-                      <td>{entrega.cliente}</td>
-                      <td>{entrega.fecha_entrega ? new Date(entrega.fecha_entrega).toLocaleDateString() : ''}</td>
+                      <td>{entrega.cliente || 'Sin información'}</td>
+                      <td>{entrega.fecha_entrega ? new Date(entrega.fecha_entrega).toLocaleDateString() : 'Sin información'}</td>
+                      <td>{entrega.numero_remito || 'Sin información'}</td>
+                      <td>{entrega.operario || entrega.nombre_operario || 'Sin información'}</td>
                       <td>
-                        <ul className="mb-0">
-                          <li style={{ fontWeight: 'bold', color: '#495057' }}>N° Remito: {entrega.numero_remito}</li>
-                          <li style={{ fontWeight: 'bold', color: '#495057' }}>Operario: {entrega.operario || entrega.nombre_operario}</li>
-                        </ul>
-                        <Button
-                          variant="info"
-                          size="sm"
-                          className="mt-2"
+                        <button 
+                          className="btn btn-edit" 
                           onClick={() => handleVerEntrega(entrega)}
-                          style={{ fontWeight: 'bold' }}
                         >
-                          Ver entrega
-                        </Button>
+                          <i className="fas fa-eye"></i> Ver detalle
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -215,33 +210,64 @@ export default function ReporteEntregas() {
       )}
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
-          <Modal.Title style={{ fontWeight: 'bold', color: '#343a40' }}>Detalle de productos entregados</Modal.Title>
+          <Modal.Title>Detalle de productos entregados</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {modalEntrega && (
-            <>
-              <p><b style={{ color: '#495057' }}>Cliente:</b> {modalEntrega.cliente}</p>
-              <p><b style={{ color: '#495057' }}>Fecha:</b> {modalEntrega.fecha_entrega ? new Date(modalEntrega.fecha_entrega).toLocaleDateString() : ''}</p>
-              <p><b style={{ color: '#495057' }}>N° Remito:</b> {modalEntrega.numero_remito}</p>
-              <p><b style={{ color: '#495057' }}>Operario:</b> {modalEntrega.operario || modalEntrega.nombre_operario}</p>
-            </>
+            <div className="mb-4">
+              <div className="row mb-2">
+                <div className="col-4 fw-bold">Cliente:</div>
+                <div className="col-8">{modalEntrega.cliente}</div>
+              </div>
+              <div className="row mb-2">
+                <div className="col-4 fw-bold">Fecha:</div>
+                <div className="col-8">{modalEntrega.fecha_entrega ? new Date(modalEntrega.fecha_entrega).toLocaleDateString() : 'Sin información'}</div>
+              </div>
+              <div className="row mb-2">
+                <div className="col-4 fw-bold">N° Remito:</div>
+                <div className="col-8">{modalEntrega.numero_remito || 'Sin información'}</div>
+              </div>
+              <div className="row mb-2">
+                <div className="col-4 fw-bold">Operario:</div>
+                <div className="col-8">{modalEntrega.operario || modalEntrega.nombre_operario || 'Sin información'}</div>
+              </div>
+            </div>
           )}
           <hr />
-          <h6 style={{ fontWeight: 'bold', color: '#343a40' }}>Productos:</h6>
+          <h6 className="mb-3">Productos:</h6>
           {detalle.length === 0 ? (
-            <p className="text-muted" style={{ textAlign: 'center' }}>No hay productos registrados para este remito.</p>
+            <div className="alert alert-info">No hay productos registrados para este remito.</div>
           ) : (
-            <ul>
-              {detalle.map((p, idx) => (
-                <li key={idx} style={{ fontWeight: 'bold', color: '#495057' }}>
-                  <b>{p.nombre}</b> - Cantidad: {p.cantidad} {p.unidad_medida || ''} {p.codigo_bit ? `| Código bit: ${p.codigo_bit}` : ''}
-                </li>
-              ))}
-            </ul>
+            <div className="table-responsive">
+              <table className="table table-sm table-bordered">
+                <thead className="table-light">
+                  <tr>
+                    <th>#</th>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Unidad</th>
+                    <th>Código Bit</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {detalle.map((p, idx) => (
+                    <tr key={idx}>
+                      <td>{idx + 1}</td>
+                      <td>{p.nombre || 'Sin información'}</td>
+                      <td className="numeric">{p.cantidad || 'Sin información'}</td>
+                      <td>{p.unidad_medida || 'Sin información'}</td>
+                      <td className="numeric">{p.codigo_bit || 'Sin información'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)} style={{ fontWeight: 'bold' }}>Cerrar</Button>
+          <Button className="btn btn-secondary" onClick={() => setShowModal(false)}>
+            <i className="fas fa-times"></i> Cerrar
+          </Button>
         </Modal.Footer>
       </Modal>
     </div>
