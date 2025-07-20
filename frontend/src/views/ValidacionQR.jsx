@@ -29,7 +29,18 @@ export default function ValidacionQR() {
         setProductos(data.productos || []);
         const res = await fetch(`/api/remitos/${data.id}/operarios`);
         const ops = await res.json();
-        setOperarios(Array.isArray(ops) ? ops : ops.todos || []);
+        console.log('Respuesta de /api/remitos/:id/operarios', ops);
+        // Si la respuesta tiene 'asignados' como array de IDs y 'todos' como array de objetos, filtrar los habilitados
+        if (ops && Array.isArray(ops.asignados) && Array.isArray(ops.todos)) {
+          const asignados = ops.todos.filter(op => ops.asignados.includes(op.id));
+          setOperarios(asignados);
+        } else if (ops && Array.isArray(ops.todos) && ops.todos.length > 0) {
+          setOperarios(ops.todos);
+        } else if (Array.isArray(ops) && ops.length > 0) {
+          setOperarios(ops);
+        } else {
+          setOperarios([]);
+        }
       } catch (err) {
         console.error('Error al validar QR:', err);
       }

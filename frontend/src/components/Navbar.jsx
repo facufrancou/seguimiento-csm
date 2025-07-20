@@ -47,10 +47,10 @@ export default function Navbar() {
         <div className="navbar-nav me-auto">
           <Link className={`nav-link ${isActive('/') ? 'active' : ''}`} to="/" style={{ color: '#fff' }}>Inicio</Link>
           <Link className={`nav-link ${isActive('/carga') ? 'active' : ''}`} to="/carga" style={{ color: '#fff' }}>Carga</Link>
+          <Link className={`nav-link ${isActive('/productos') ? 'active' : ''}`} to="/productos" style={{ color: '#fff' }}>Productos</Link>
+          <Link className={`nav-link ${isActive('/remitos-pendientes') ? 'active' : ''}`} to="/remitos-pendientes" style={{ color: '#fff' }}>Remitos pendientes</Link>
           <Link className={`nav-link ${isActive('/reportes') ? 'active' : ''}`} to="/reportes" style={{ color: '#fff' }}>Reportes</Link>
           <Link className={`nav-link ${isActive('/alta-usuario') ? 'active' : ''}`} to="/alta-usuario" style={{ color: '#fff' }}>Usuarios</Link>
-          <Link className={`nav-link ${isActive('/remitos-pendientes') ? 'active' : ''}`} to="/remitos-pendientes" style={{ color: '#fff' }}>Remitos pendientes</Link>
-          <Link className={`nav-link ${isActive('/productos') ? 'active' : ''}`} to="/productos" style={{ color: '#fff' }}>Productos</Link>
         </div>
         {isLoggedIn && (
           <div className="navbar-text text-light me-3 d-flex align-items-center">

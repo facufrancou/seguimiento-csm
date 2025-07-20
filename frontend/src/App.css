@@ -72,11 +72,9 @@ html, body {
   border-radius: var(--border-radius-md);
   box-shadow: var(--box-shadow-md);
   margin-bottom: var(--spacing-lg);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card:hover {
-  transform: translateY(-4px);
   box-shadow: var(--box-shadow-lg);
 }
 
@@ -228,12 +226,11 @@ html, body {
 }
 
 .btn:hover {
-  transform: translateY(-2px);
   box-shadow: var(--box-shadow-md);
 }
 
 .btn:active {
-  transform: translateY(1px);
+  opacity: 0.9;
 }
 
 .btn:disabled {
@@ -334,7 +331,6 @@ html, body {
 
 .btn-edit:hover {
   background-color: var(--secondary-dark);
-  transform: translateY(-2px);
   box-shadow: var(--box-shadow-sm);
 }
 
@@ -351,7 +347,6 @@ html, body {
 
 .btn-delete:hover {
   background-color: #d32f2f;
-  transform: translateY(-2px);
   box-shadow: var(--box-shadow-sm);
 }
 
@@ -379,7 +374,6 @@ html, body {
 
 .pagination-controls button:hover:not(:disabled) {
   background-color: var(--primary-dark);
-  transform: translateY(-2px);
   box-shadow: var(--box-shadow-md);
 }
 

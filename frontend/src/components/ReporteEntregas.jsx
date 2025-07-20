@@ -208,7 +208,7 @@ export default function ReporteEntregas() {
           )}
         </>
       )}
-      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered dialogClassName="modal-lg">
         <Modal.Header closeButton>
           <Modal.Title>Detalle de productos entregados</Modal.Title>
         </Modal.Header>

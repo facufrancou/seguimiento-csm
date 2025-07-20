@@ -14,8 +14,17 @@ const productoController = {
   },
 
   async create(req, res) {
-    const id = await Producto.create(req.body);
-    res.status(201).json({ id });
+    try {
+      const id = await Producto.create(req.body);
+      const producto = await Producto.getById(id);
+      res.status(201).json(producto);
+    } catch (error) {
+      console.error('Error al crear producto:', error);
+      res.status(500).json({ 
+        error: 'Error al crear el producto',
+        details: error.message 
+      });
+    }
   },
 
   async update(req, res) {

@@ -59,10 +59,10 @@ export default function AltaUsuario() {
               
               <Form.Group className="form-group">
                 <Form.Label className="form-label">
-                  <i className="fas fa-envelope"></i> Email
+                  <i className="fas fa-envelope"></i> Usuario
                 </Form.Label>
                 <Form.Control 
-                  type="email" 
+                  type="text" 
                   className="form-control"
                   value={email} 
                   onChange={e => setEmail(e.target.value)} 

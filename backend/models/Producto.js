@@ -13,9 +13,19 @@ const Producto = {
   },
 
   async create({ codigo_bit, codigo_barra, nombre, unidad_medida }) {
+    // Si el código de barras está definido, verificamos si ya existe
+    if (codigo_barra) {
+      const existingProduct = await this.getByCodigoBarra(codigo_barra);
+      if (existingProduct) {
+        // Si ya existe, retornamos ese id en lugar de crear uno nuevo
+        return existingProduct.id;
+      }
+    }
+    
+    // Si no existe o no tiene código de barras, lo creamos
     const [result] = await db.query(
       'INSERT INTO productos (codigo_bit, codigo_barra, nombre, unidad_medida) VALUES (?, ?, ?, ?)',
-      [codigo_bit, codigo_barra, nombre, unidad_medida]
+      [codigo_bit, codigo_barra || null, nombre, unidad_medida]
     );
     return result.insertId;
   },

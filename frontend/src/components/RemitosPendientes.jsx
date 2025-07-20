@@ -15,6 +15,20 @@ export default function RemitosPendientes() {
   const [operarios, setOperarios] = useState([]);
   const [showQRModal, setShowQRModal] = useState(false);
   const [qrData, setQRData] = useState(null);
+  const [generatingQR, setGeneratingQR] = useState(false);
+  // Generar QR y mostrar modal desde la tabla
+  const handleGenerarQRDesdeTabla = async (remito) => {
+    setGeneratingQR(true);
+    try {
+      const res = await axios.post(`/api/remitos/${remito.id}/generar-qr`);
+      setQRData(res.data);
+      setShowQRModal(true);
+    } catch (err) {
+      alert('Error al generar el QR');
+    } finally {
+      setGeneratingQR(false);
+    }
+  };
 
   useEffect(() => {
     const cargarRemitos = async () => {
@@ -141,10 +155,18 @@ export default function RemitosPendientes() {
                             </button>
                             <button
                               type="button"
-                              className="btn btn-warning"
+                              className="btn btn-warning me-2"
                               onClick={() => handleEditarRemito(remito)}
                             >
                               <i className="fas fa-edit"></i> Editar
+                            </button>
+                            <button
+                              type="button"
+                              className="btn btn-success"
+                              disabled={generatingQR}
+                              onClick={() => handleGenerarQRDesdeTabla(remito)}
+                            >
+                              <i className="fas fa-qrcode"></i> Generar link
                             </button>
                           </td>
                         </tr>
@@ -156,7 +178,7 @@ export default function RemitosPendientes() {
           </>
         )}
       {/* Modal detalle remito */}
-      <Modal show={showModal} onHide={() => setShowModal(false)} centered className="custom-modal">
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered className="custom-modal" dialogClassName="modal-lg">
         <Modal.Header closeButton>
           <Modal.Title>Detalle del remito</Modal.Title>
         </Modal.Header>
@@ -165,15 +187,15 @@ export default function RemitosPendientes() {
             <>
               <div className="modal-info-row">
                 <i className="fas fa-building"></i>
-                <span className="modal-info-label">Cliente:</span> {modalRemito.cliente_nombre}
+                <span className="modal-info-label"> Cliente:</span> {modalRemito.cliente_nombre}
               </div>
               <div className="modal-info-row">
                 <i className="fas fa-calendar-alt"></i>
-                <span className="modal-info-label">Fecha:</span> {modalRemito.fecha_emision ? new Date(modalRemito.fecha_emision).toLocaleDateString() : ''}
+                <span className="modal-info-label"> Fecha:</span> {modalRemito.fecha_emision ? new Date(modalRemito.fecha_emision).toLocaleDateString() : ''}
               </div>
               <div className="modal-info-row">
                 <i className="fas fa-file-invoice"></i>
-                <span className="modal-info-label">N° Remito:</span> {modalRemito.numero_remito}
+                <span className="modal-info-label"> N° Remito:</span> {modalRemito.numero_remito}
               </div>
             </>
           )}
@@ -184,15 +206,30 @@ export default function RemitosPendientes() {
           {detalle.length === 0 ? (
             <p className="empty-message">No hay productos registrados para este remito.</p>
           ) : (
-            <ul className="product-list">
-              {detalle.map((p, idx) => (
-                <li key={idx} className="product-item">
-                  <span className="product-name">{p.nombre}</span> - 
-                  <span className="product-quantity">Cantidad: {p.cantidad} {p.unidad_medida || ''}</span>
-                  {p.codigo_bit && <span className="product-code">| Código bit: {p.codigo_bit}</span>}
-                </li>
-              ))}
-            </ul>
+            <div className="table-responsive">
+              <table className="table table-sm table-bordered">
+                <thead className="table-light">
+                  <tr>
+                    <th>#</th>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Unidad</th>
+                    <th>Código Bit</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {detalle.map((p, idx) => (
+                    <tr key={idx}>
+                      <td>{idx + 1}</td>
+                      <td>{p.nombre || 'Sin información'}</td>
+                      <td className="numeric">{p.cantidad || 'Sin información'}</td>
+                      <td>{p.unidad_medida || 'Sin información'}</td>
+                      <td className="numeric">{p.codigo_bit || 'Sin información'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </Modal.Body>
         <Modal.Footer>
@@ -203,7 +240,7 @@ export default function RemitosPendientes() {
       </Modal>
       
       {/* Modal editar remito */}
-      <Modal show={showEditModal} onHide={() => setShowEditModal(false)} centered className="custom-modal">
+      <Modal show={showEditModal} onHide={() => setShowEditModal(false)} centered className="custom-modal" dialogClassName="modal-lg">
         <Modal.Header closeButton>
           <Modal.Title>Editar remito</Modal.Title>
         </Modal.Header>
@@ -278,18 +315,18 @@ export default function RemitosPendientes() {
       {/* Modal QR generado */}
       <Modal show={showQRModal} onHide={() => setShowQRModal(false)} centered className="custom-modal">
         <Modal.Header closeButton>
-          <Modal.Title>QR generado</Modal.Title>
+          <Modal.Title>Entrega</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {qrData ? (
             <>
               <div className="modal-info-row">
                 <i className="fas fa-key"></i>
-                <span className="modal-info-label">Token:</span> {qrData.token}
+                <span className="modal-info-label"> Token: </span> {qrData.token}
               </div>
               <div className="modal-info-row">
                 <i className="fas fa-link"></i>
-                <span className="modal-info-label">Link:</span> 
+                <span className="modal-info-label"> Link: </span> 
                 <a href={qrData.urlQR} target="_blank" rel="noopener noreferrer">{qrData.urlQR}</a>
               </div>
             </>

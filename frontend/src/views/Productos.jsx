@@ -10,7 +10,7 @@ const Productos = () => {
   const [selectedProducto, setSelectedProducto] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 15;
+  const itemsPerPage = 10;
 
   // Función para cargar productos que se puede llamar cuando sea necesario
   const fetchProductos = async () => {

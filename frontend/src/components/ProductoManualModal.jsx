@@ -3,7 +3,17 @@ import { Modal, Button, Form } from 'react-bootstrap';
 import api from '../services/api';
 import '../App.css';
 
-export default function ProductoManualModal({ producto, onClose, onSave, isEditing, show = true }) {
+export default function ProductoManualModal({ producto, onClose, onCancel, onSave, onConfirm, isEditing, show = true }) {
+  // Unificar las funciones de cierre y guardado
+  const handleClose = () => {
+    if (onClose) onClose();
+    if (onCancel) onCancel();
+  };
+  
+  const handleSave = (data) => {
+    if (onSave) onSave(data);
+    if (onConfirm) onConfirm(data);
+  };
   const [nombre, setNombre] = useState(producto ? producto.nombre : '');
   const [cantidad, setCantidad] = useState(producto ? producto.cantidad : '');
   const [unidad_medida, setUnidadMedida] = useState(producto ? producto.unidad_medida : '');
@@ -20,9 +30,13 @@ export default function ProductoManualModal({ producto, onClose, onSave, isEditi
     }
   }, [producto]);
 
+  const [error, setError] = useState('');
+  
   const handleGuardar = async () => {
+    setError('');
+    
     if (!nombre) {
-      alert('El nombre del producto es obligatorio');
+      setError('El nombre del producto es obligatorio');
       return;
     }
     
@@ -34,7 +48,7 @@ export default function ProductoManualModal({ producto, onClose, onSave, isEditi
         cantidad: cantidad ? cantidad.replace(',', '.') : '',
         unidad_medida,
         codigo_bit: codigo_bit === '' ? 0 : parseInt(codigo_bit, 10) || 0,
-        codigo_barra,
+        codigo_barra: codigo_barra || null, // Aseguramos que sea null si está vacío
       };
       
       if (isEditing && producto) {
@@ -51,9 +65,8 @@ export default function ProductoManualModal({ producto, onClose, onSave, isEditi
         updatedProducto = response.data;
       }
       
-      // Llamar al callback con el producto actualizado
-      if (onSave) onSave(updatedProducto);
-      if (onClose) onClose();
+      // Llamar al callback con el producto actualizado usando la función unificada
+      handleSave(updatedProducto);
       
       // Limpiar formulario
       setNombre('');
@@ -63,7 +76,18 @@ export default function ProductoManualModal({ producto, onClose, onSave, isEditi
       setCodigoBarra('');
     } catch (error) {
       console.error('Error al guardar el producto:', error);
-      alert('Error al guardar el producto. Por favor, intente nuevamente.');
+      
+      // Mejorar mensaje de error
+      if (error.response) {
+        // El servidor respondió con un estado de error
+        setError(`Error ${error.response.status}: ${error.response.data.error || 'No se pudo guardar el producto'}`);
+      } else if (error.request) {
+        // La petición fue hecha pero no se recibió respuesta
+        setError('No se pudo conectar con el servidor. Verifique su conexión o que el servidor esté en ejecución.');
+      } else {
+        // Error al configurar la petición
+        setError(`Error al guardar: ${error.message}`);
+      }
     }
   };
 
@@ -91,11 +115,17 @@ export default function ProductoManualModal({ producto, onClose, onSave, isEditi
   };
 
   return (
-    <Modal show={show} onHide={onClose} centered>
+    <Modal show={show} onHide={handleClose} centered>
       <Modal.Header closeButton>
         <Modal.Title>{producto ? 'Editar Producto' : 'Agregar producto manualmente'}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        {error && (
+          <div className="alert alert-danger" role="alert">
+            <i className="fas fa-exclamation-circle me-2"></i>
+            {error}
+          </div>
+        )}
         <Form>
           <Form.Group className="mb-3">
             <Form.Label>Nombre</Form.Label>
@@ -152,7 +182,7 @@ export default function ProductoManualModal({ producto, onClose, onSave, isEditi
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button className="btn btn-secondary" variant="secondary" onClick={onClose}>Cancelar</Button>
+        <Button className="btn btn-secondary" variant="secondary" onClick={handleClose}>Cancelar</Button>
         <Button className="btn btn-primary" variant="primary" onClick={handleGuardar}>{isEditing ? 'Guardar cambios' : 'Agregar'}</Button>
       </Modal.Footer>
     </Modal>
