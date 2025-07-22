@@ -72,19 +72,58 @@ const entregaController = {
   async reporteEntregas(req, res) {
     try {
       const entregas = await Entrega.getAll();
+      
+      // Debuggear el formato de entregas y asegurarse que entrega_parcial esté presente
+      console.log('[DEBUG] Enviando reporte de entregas:');
+      if (entregas.length > 0) {
+        console.log(`[DEBUG] Primera entrega: entrega_parcial=${entregas[0].entrega_parcial}, tipo=${typeof entregas[0].entrega_parcial}`);
+      }
+      
       res.json(entregas);
     } catch (err) {
+      console.error('[ERROR] Error al obtener reporte:', err);
       res.status(500).json({ error: 'Error al obtener el reporte de entregas' });
     }
   },
 
-  // Nuevo endpoint: detalle de productos entregados por remito
+  // Detalle de productos entregados por remito con información de estado mejorada
   async detalleEntrega(req, res) {
     try {
       const remito_id = req.params.remito_id;
       const productos = await RemitoProducto.getByRemito(remito_id);
-      res.json(productos);
+      
+      // Añadir información más precisa sobre el estado de entrega
+      const productosConEstado = productos.map(p => {
+        const cantidadSolicitada = parseFloat(p.cantidad_solicitada || 0);
+        const cantidadEntregada = parseFloat(p.cantidad_entregada || 0);
+        
+        // Determinar el estado con más precisión
+        let estadoDetallado;
+        if (p.entregado === 0 || cantidadEntregada === 0) {
+          estadoDetallado = 'No entregado';
+        } else if (Math.abs(cantidadEntregada - cantidadSolicitada) < 0.01) {
+          estadoDetallado = 'Completo';
+        } else if (cantidadEntregada < cantidadSolicitada) {
+          estadoDetallado = 'Parcial';
+        } else {
+          estadoDetallado = 'Excedido';
+        }
+        
+        return {
+          ...p,
+          estado_entrega: estadoDetallado,
+          diferencia: (cantidadEntregada - cantidadSolicitada).toFixed(2)
+        };
+      });
+      
+      console.log('[DEBUG] Detalle de productos para remito_id:', remito_id);
+      if (productosConEstado.length > 0) {
+        console.log('[DEBUG] Primer producto con estado mejorado:', JSON.stringify(productosConEstado[0], null, 2));
+      }
+      
+      res.json(productosConEstado);
     } catch (err) {
+      console.error('[ERROR] Error al obtener detalle de productos:', err);
       res.status(500).json({ error: 'Error al obtener el detalle de productos' });
     }
   },

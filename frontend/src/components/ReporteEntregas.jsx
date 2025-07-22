@@ -53,6 +53,15 @@ export default function ReporteEntregas() {
 
       const data = await getReporteEntregas();
       console.log('Datos obtenidos:', data);
+      
+      // Analizar específicamente el campo entrega_parcial
+      if (data && data.length > 0) {
+        console.log('Análisis de entrega_parcial en primera entrega:');
+        console.log('- Valor:', data[0].entrega_parcial);
+        console.log('- Tipo:', typeof data[0].entrega_parcial);
+        console.log('- ¿Es 1?:', data[0].entrega_parcial === 1);
+        console.log('- ¿Es true?:', data[0].entrega_parcial === true);
+      }
       let filtradas = data;
 
       if (filtroCliente.trim() !== '') {
@@ -181,6 +190,7 @@ export default function ReporteEntregas() {
                     <th>Fecha</th>
                     <th>N° Remito</th>
                     <th>Operario</th>
+                    <th>Estado</th>
                     <th>Acciones</th>
                   </tr>
                 </thead>
@@ -192,6 +202,12 @@ export default function ReporteEntregas() {
                       <td>{entrega.fecha_entrega ? new Date(entrega.fecha_entrega).toLocaleDateString() : 'Sin información'}</td>
                       <td>{entrega.numero_remito || 'Sin información'}</td>
                       <td>{entrega.operario || entrega.nombre_operario || 'Sin información'}</td>
+                      <td>
+                        {entrega.entrega_parcial === 1 || entrega.entrega_parcial === true ? 
+                          <span className="badge bg-warning text-dark">Parcial</span> : 
+                          <span className="badge bg-success">Completa</span>
+                        }
+                      </td>
                       <td>
                         <button 
                           className="btn btn-edit" 
@@ -231,6 +247,20 @@ export default function ReporteEntregas() {
                 <div className="col-4 fw-bold">Operario:</div>
                 <div className="col-8">{modalEntrega.operario || modalEntrega.nombre_operario || 'Sin información'}</div>
               </div>
+              <div className="row mb-2">
+                <div className="col-4 fw-bold">Estado de entrega:</div>
+                <div className="col-8">
+                  {modalEntrega.entrega_parcial ? 
+                    <span className="badge bg-warning text-dark">Parcial</span> : 
+                    <span className="badge bg-success">Completa</span>
+                  }
+                  {modalEntrega.entrega_parcial && 
+                    <small className="d-block text-danger mt-1">
+                      Esta entrega no incluyó todos los productos o cantidades solicitadas.
+                    </small>
+                  }
+                </div>
+              </div>
             </div>
           )}
           <hr />
@@ -244,21 +274,50 @@ export default function ReporteEntregas() {
                   <tr>
                     <th>#</th>
                     <th>Producto</th>
-                    <th>Cantidad</th>
+                    <th>Cantidad Solicitada</th>
+                    <th>Cantidad Entregada</th>
+                    <th>Estado</th>
                     <th>Unidad</th>
                     <th>Código Bit</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {detalle.map((p, idx) => (
-                    <tr key={idx}>
-                      <td>{idx + 1}</td>
-                      <td>{p.nombre || 'Sin información'}</td>
-                      <td className="numeric">{p.cantidad || 'Sin información'}</td>
-                      <td>{p.unidad_medida || 'Sin información'}</td>
-                      <td className="numeric">{p.codigo_bit || 'Sin información'}</td>
-                    </tr>
-                  ))}
+                  {detalle.map((p, idx) => {
+                    const cantidadSolicitada = parseFloat(p.cantidad_solicitada || p.cantidad || 0);
+                    const cantidadEntregada = parseFloat(p.cantidad_entregada || 0);
+                    const diferencia = cantidadSolicitada - cantidadEntregada;
+                    const entregado = p.entregado === 1;
+                    
+                    // Usar directamente el estado_entrega que viene del backend si está disponible
+                    let estadoProducto = p.estado_entrega || 'Desconocido';
+                    
+                    // Logging detallado para depuración
+                    console.log(`Producto ${p.nombre}: solicitada=${cantidadSolicitada}, entregada=${cantidadEntregada}, diferencia=${diferencia}, estado=${estadoProducto}, entregado=${entregado}, estado_entrega=${p.estado_entrega}`);
+                    
+                    return (
+                      <tr key={idx}>
+                        <td>{idx + 1}</td>
+                        <td>{p.nombre || 'Sin información'}</td>
+                        <td className="numeric">{cantidadSolicitada.toFixed(2)}</td>
+                        <td className="numeric">{cantidadEntregada.toFixed(2)}</td>
+                        <td>
+                          {estadoProducto === 'Completo' ? (
+                            <span className="badge bg-success">Completo</span>
+                          ) : estadoProducto === 'No entregado' ? (
+                            <span className="badge bg-danger">No entregado</span>
+                          ) : estadoProducto === 'Parcial' ? (
+                            <span className="badge bg-warning text-dark">Parcial ({diferencia > 0 ? `-${diferencia.toFixed(2)}` : `+${Math.abs(diferencia).toFixed(2)}`})</span>
+                          ) : estadoProducto === 'Excedido' ? (
+                            <span className="badge bg-info">Excedido (+{Math.abs(diferencia).toFixed(2)})</span>
+                          ) : (
+                            <span className="badge bg-secondary">Desconocido</span>
+                          )}
+                        </td>
+                        <td>{p.unidad_medida || 'Sin información'}</td>
+                        <td className="numeric">{p.codigo_bit || 'Sin información'}</td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

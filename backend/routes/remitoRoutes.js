@@ -48,23 +48,104 @@ router.get('/validar/:token', async (req, res) => {
 
 // Endpoint para registrar entrega
 router.post('/registrar-entrega', async (req, res) => {
-  const { token, operario_id, nombre_operario, productos } = req.body;
+  const { token, operario_id, nombre_operario, productos, entrega_parcial = false } = req.body;
   const TokenAcceso = require('../models/TokenAcceso');
   const RemitoProducto = require('../models/RemitoProducto');
   const Remito = require('../models/Remito');
   const Entrega = require('../models/Entrega');
+  
+  console.log(`[DEBUG] Recibiendo solicitud de entrega, parcial=${entrega_parcial}`);
+  
   const tokenRow = await TokenAcceso.getByToken(token);
   if (!tokenRow) return res.status(400).json({ error: 'Token inválido o expirado' });
   const remito_id = tokenRow.remito_id;
-  // Marcar productos como entregados
-  for (let producto of productos) {
-    await RemitoProducto.marcarEntregado(remito_id, producto.producto_id);
+  
+  // Primero obtenemos todos los productos del remito
+  const todosProductos = await RemitoProducto.getByRemito(remito_id);
+  console.log('[DEBUG] Todos los productos del remito:', todosProductos.map(p => p.id));
+  console.log('[DEBUG] Productos recibidos para entregar:', productos);
+  
+  // Crear mapas para los productos
+  const productosEntregadosMap = {};
+  const productosRemito = {};
+  
+  // Para depurar, imprimimos más información
+  console.log('[DEBUG] Productos recibidos detalle:');
+  productos.forEach(p => {
+    console.log(`  - producto_id: ${p.producto_id}, cantidad: ${p.cantidad}`);
+    // En el frontend se está enviando el id del registro de remito_productos como producto_id
+    productosEntregadosMap[p.producto_id] = p.cantidad;
+  });
+  
+  // Creamos un mapa de los productos del remito por ID para acceso rápido
+  todosProductos.forEach(p => {
+    productosRemito[p.id] = p;
+    console.log(`  - id: ${p.id}, producto_id: ${p.producto_id}, nombre: ${p.nombre}`);
+  });
+  
+  // Ahora procesamos solo los productos que vienen en la solicitud
+  console.log('[DEBUG] Procesando productos por ID de registro:');
+  
+  // Primero marcamos todos como no entregados con cantidad 0
+  for (let producto of todosProductos) {
+    try {
+      await RemitoProducto.actualizarEntrega(
+        producto.id,
+        0,  // cantidad_entregada = 0
+        0   // entregado = 0 (no entregado)
+      );
+      console.log(`[DEBUG] Producto ${producto.id} (${producto.nombre}) inicializado como no entregado`);
+    } catch (error) {
+      console.error(`[ERROR] Error al inicializar producto ${producto.id}:`, error);
+    }
   }
+  
+  // Luego actualizamos solo los productos que fueron entregados
+  for (const [idRegistro, cantidad] of Object.entries(productosEntregadosMap)) {
+    const idNumerico = parseInt(idRegistro);
+    const fueEntregado = cantidad > 0;
+    
+    // Marcar como entregado y registrar la cantidad entregada (0 si no fue entregado)
+    if (productosRemito[idNumerico]) {
+      try {
+        console.log(`[DEBUG] Actualizando producto entregado: registro ID=${idNumerico}, cantidad=${cantidad}`);
+        
+        await RemitoProducto.actualizarEntrega(
+          idNumerico,  // ID del registro en remito_productos
+          cantidad,    // Cantidad entregada
+          1            // entregado = 1 (sí entregado)
+        );
+        
+        console.log(`[DEBUG] Producto con ID de registro ${idNumerico} actualizado como entregado con cantidad ${cantidad}`);
+      } catch (error) {
+        console.error(`[ERROR] Error al actualizar producto ${idNumerico}:`, error);
+      }
+    } else {
+      console.warn(`[WARN] Producto con ID ${idNumerico} no encontrado en el remito`);
+    }
+  }
+  
   // Registrar entrega en la tabla entregas
-  await Entrega.create({ remito_id, operario_id, nombre_operario });
-  // Actualizar estado del remito a 'entregado'
-  await Remito.updateEstado(remito_id, 'entregado');
-  res.json({ mensaje: 'Entrega registrada correctamente.' });
+  // Convertimos a booleano y luego a 0/1 para asegurarnos
+  const esParcial = Boolean(entrega_parcial);
+  console.log(`[DEBUG] Guardando entrega como parcial=${esParcial}`);
+  
+  await Entrega.create({ 
+    remito_id, 
+    operario_id, 
+    nombre_operario, 
+    entrega_parcial: esParcial 
+  });
+  
+  // Actualizar estado del remito según si es parcial o completa
+  const estado = esParcial ? 'parcial' : 'entregado';
+  console.log(`[DEBUG] Actualizando estado del remito a "${estado}"`);
+  await Remito.updateEstado(remito_id, estado);
+  
+  // Verificar que la entrega se guardó correctamente
+  const entregaGuardada = await Entrega.getByRemitoId(remito_id);
+  console.log('[DEBUG] Entrega guardada:', entregaGuardada);
+  res.json({ mensaje: `Entrega ${entrega_parcial ? 'parcial' : 'completa'} registrada correctamente.` });
 });
 
 router.put('/:id', authMiddleware, remitoController.updatePendiente);

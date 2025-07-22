@@ -90,12 +90,13 @@ export const crearProducto = async (producto) => {
 };
 
 // Registrar entrega
-export const registrarEntrega = async ({ token, operario_id, nombre_operario, productos }) => {
+export const registrarEntrega = async ({ token, operario_id, nombre_operario, productos, entrega_parcial = false }) => {
   const response = await api.post('/api/remitos/registrar-entrega', {
     token,
     operario_id,
     nombre_operario,
-    productos
+    productos,
+    entrega_parcial
   });
   return response.data;
 };
