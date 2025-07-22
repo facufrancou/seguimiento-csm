@@ -9,10 +9,25 @@ import LoginForm from './components/LoginForm';
 import AltaUsuario from './views/AltaUsuario';
 import RemitosPendientes from './components/RemitosPendientes';
 import Productos from './views/Productos';
+import { canAccessRoute, getCurrentUserRole } from './utils/roleValidator';
 
-function PrivateRoute({ children }) {
+function PrivateRoute({ children, path }) {
   const isLoggedIn = localStorage.getItem('token');
-  return isLoggedIn ? children : <Navigate to="/login" />;
+  const userRole = getCurrentUserRole();
+  
+  if (!isLoggedIn) {
+    return <Navigate to="/login" />;
+  }
+  
+  if (!canAccessRoute(userRole, path)) {
+    // Si el usuario está logueado pero no tiene acceso a esta ruta
+    // Lo redirigimos a la página de inicio o a la de remitos pendientes si es operario
+    return userRole === 'operario' 
+      ? <Navigate to="/remitos-pendientes" />
+      : <Navigate to="/" />;
+  }
+  
+  return children;
 }
 
 function AppContent() {
@@ -23,16 +38,16 @@ function AppContent() {
       {!hideNavbar && <Navbar />}
       <div className="container mt-2">
         <Routes>
-          <Route path="/" element={<PrivateRoute><Home /></PrivateRoute>} />
-          <Route path="/carga" element={<PrivateRoute><CargaRemito /></PrivateRoute>} />
+          <Route path="/" element={<PrivateRoute path="/"><Home /></PrivateRoute>} />
+          <Route path="/carga" element={<PrivateRoute path="/carga"><CargaRemito /></PrivateRoute>} />
           <Route path="/validar/:token" element={<ValidacionQR />} />
           <Route path="/validar" element={<ValidacionQR />} />
           <Route path="/validacion" element={<ValidacionQR />} />
-          <Route path="/reportes" element={<PrivateRoute><Reportes /></PrivateRoute>} />
-          <Route path="/remitos-pendientes" element={<PrivateRoute><RemitosPendientes /></PrivateRoute>} />
+          <Route path="/reportes" element={<PrivateRoute path="/reportes"><Reportes /></PrivateRoute>} />
+          <Route path="/remitos-pendientes" element={<PrivateRoute path="/remitos-pendientes"><RemitosPendientes /></PrivateRoute>} />
           <Route path="/login" element={<LoginForm />} />
-          <Route path="/alta-usuario" element={<PrivateRoute><AltaUsuario /></PrivateRoute>} />
-          <Route path="/productos" element={<PrivateRoute><Productos /></PrivateRoute>} />
+          <Route path="/alta-usuario" element={<PrivateRoute path="/alta-usuario"><AltaUsuario /></PrivateRoute>} />
+          <Route path="/productos" element={<PrivateRoute path="/productos"><Productos /></PrivateRoute>} />
         </Routes>
       </div>
     </>

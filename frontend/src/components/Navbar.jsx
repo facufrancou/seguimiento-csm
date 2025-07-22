@@ -2,15 +2,19 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { FaUser } from 'react-icons/fa';
+import { canAccessRoute, getCurrentUserRole, ROLES } from '../utils/roleValidator';
 
 export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
-
+  
   // Lógica de sesión actualizada
   const isLoggedIn = localStorage.getItem('token'); // Verificar si hay un token almacenado
+  const userRole = getCurrentUserRole();
+  
   const handleLogout = () => {
     localStorage.removeItem('token'); // Limpiar el token de sesión
+    localStorage.removeItem('user'); // Limpiar datos del usuario
     navigate('/login');
   };
 
@@ -45,12 +49,24 @@ export default function Navbar() {
       </button>
       <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div className="navbar-nav me-auto">
-          <Link className={`nav-link ${isActive('/') ? 'active' : ''}`} to="/" style={{ color: '#fff' }}>Inicio</Link>
-          <Link className={`nav-link ${isActive('/carga') ? 'active' : ''}`} to="/carga" style={{ color: '#fff' }}>Carga</Link>
-          <Link className={`nav-link ${isActive('/productos') ? 'active' : ''}`} to="/productos" style={{ color: '#fff' }}>Productos</Link>
-          <Link className={`nav-link ${isActive('/remitos-pendientes') ? 'active' : ''}`} to="/remitos-pendientes" style={{ color: '#fff' }}>Remitos pendientes</Link>
-          <Link className={`nav-link ${isActive('/reportes') ? 'active' : ''}`} to="/reportes" style={{ color: '#fff' }}>Reportes</Link>
-          <Link className={`nav-link ${isActive('/alta-usuario') ? 'active' : ''}`} to="/alta-usuario" style={{ color: '#fff' }}>Usuarios</Link>
+          {canAccessRoute(userRole, '/') && (
+            <Link className={`nav-link ${isActive('/') ? 'active' : ''}`} to="/" style={{ color: '#fff' }}>Inicio</Link>
+          )}
+          {canAccessRoute(userRole, '/carga') && (
+            <Link className={`nav-link ${isActive('/carga') ? 'active' : ''}`} to="/carga" style={{ color: '#fff' }}>Carga</Link>
+          )}
+          {canAccessRoute(userRole, '/productos') && (
+            <Link className={`nav-link ${isActive('/productos') ? 'active' : ''}`} to="/productos" style={{ color: '#fff' }}>Productos</Link>
+          )}
+          {canAccessRoute(userRole, '/remitos-pendientes') && (
+            <Link className={`nav-link ${isActive('/remitos-pendientes') ? 'active' : ''}`} to="/remitos-pendientes" style={{ color: '#fff' }}>Remitos pendientes</Link>
+          )}
+          {canAccessRoute(userRole, '/reportes') && (
+            <Link className={`nav-link ${isActive('/reportes') ? 'active' : ''}`} to="/reportes" style={{ color: '#fff' }}>Reportes</Link>
+          )}
+          {canAccessRoute(userRole, '/alta-usuario') && (
+            <Link className={`nav-link ${isActive('/alta-usuario') ? 'active' : ''}`} to="/alta-usuario" style={{ color: '#fff' }}>Usuarios</Link>
+          )}
         </div>
         {isLoggedIn && (
           <div className="navbar-text text-light me-3 d-flex align-items-center">
