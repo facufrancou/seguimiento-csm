@@ -392,20 +392,32 @@ export default function RemitoForm() {
             </div>
 
             {productosSeleccionados.length > 0 ? (
-              <ul className="product-list">
-                {productosSeleccionados.map((p, idx) => (
-                  <li key={idx} className="product-item">
-                    <div className="product-details">
-                      <span className="product-name">{p.nombre ? p.nombre : `ID: ${p.producto_id}`}</span>
-                      <small className="product-info">
-                        {p.unidad_medida ? `Unidad: ${p.unidad_medida}` : ''}
-                        {p.codigo_bit !== undefined && p.codigo_bit !== null ? ` | Código bit: ${p.codigo_bit}` : ''}
-                      </small>
-                    </div>
-                    <span className="product-quantity">{p.cantidad}</span>
-                  </li>
-                ))}
-              </ul>
+              <div className="table-responsive">
+                <table className="table table-striped table-bordered">
+                  <thead className="table-light">
+                    <tr>
+                      <th>#</th>
+                      <th>Producto</th>
+                      <th>Unidad</th>
+                      <th>Código BIT</th>
+                      <th>Cantidad</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {productosSeleccionados.map((p, idx) => (
+                      <tr key={idx}>
+                        <td>{idx + 1}</td>
+                        <td>
+                          <span className="fw-bold">{p.nombre ? p.nombre : `ID: ${p.producto_id}`}</span>
+                        </td>
+                        <td>{p.unidad_medida || '-'}</td>
+                        <td>{p.codigo_bit !== undefined && p.codigo_bit !== null ? p.codigo_bit : '-'}</td>
+                        <td className="text-end fw-bold">{p.cantidad}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             ) : (
               <p className="empty-message">
                 <i className="fas fa-info-circle"></i> No se han seleccionado productos.
@@ -524,20 +536,32 @@ export default function RemitoForm() {
             </div>
             
             {productosSeleccionados.length > 0 ? (
-              <ul className="product-list">
-                {productosSeleccionados.map((p, idx) => (
-                  <li key={idx} className="product-item">
-                    <div className="product-details">
-                      <span className="product-name">{p.nombre ? p.nombre : `ID: ${p.producto_id}`}</span>
-                      <small className="product-info">
-                        {p.unidad_medida ? `Unidad: ${p.unidad_medida}` : ''}
-                        {p.codigo_bit !== undefined && p.codigo_bit !== null ? ` | Código bit: ${p.codigo_bit}` : ''}
-                      </small>
-                    </div>
-                    <span className="product-quantity">{p.cantidad}</span>
-                  </li>
-                ))}
-              </ul>
+              <div className="table-responsive">
+                <table className="table table-striped table-bordered">
+                  <thead className="table-light">
+                    <tr>
+                      <th>#</th>
+                      <th>Producto</th>
+                      <th>Unidad</th>
+                      <th>Código BIT</th>
+                      <th>Cantidad</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {productosSeleccionados.map((p, idx) => (
+                      <tr key={idx}>
+                        <td>{idx + 1}</td>
+                        <td>
+                          <span className="fw-bold">{p.nombre ? p.nombre : `ID: ${p.producto_id}`}</span>
+                        </td>
+                        <td>{p.unidad_medida || '-'}</td>
+                        <td>{p.codigo_bit !== undefined && p.codigo_bit !== null ? p.codigo_bit : '-'}</td>
+                        <td className="text-end fw-bold">{p.cantidad}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             ) : (
               <p className="empty-message">
                 <i className="fas fa-info-circle"></i> No se han seleccionado productos.

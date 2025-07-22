@@ -403,35 +403,54 @@ export default function ValidacionQR() {
                 <FaPlus size={16} /> Agregar manual
               </Button>
             </div>
-            <ul className="mt-3 list-group">
-              {productosEscaneados.map((p, index) => (
-                <li
-                  key={index}
-                  className="list-group-item d-flex justify-content-between align-items-center"
-                  style={{ border: '1px solid #dee2e6', borderRadius: '5px', marginBottom: '5px' }}
-                >
-                  <span style={{ fontWeight: 'bold', color: '#495057' }}>{p.nombre} - {p.cantidad}</span>
-                  <Button
-                    variant="danger"
-                    size="sm"
-                    onClick={() => {
-                      setProductosEscaneados((prev) => {
-                        const indexToRemove = prev.findIndex((prod, i) => i === index);
-                        if (indexToRemove !== -1) {
-                          const updatedList = [...prev];
-                          updatedList.splice(indexToRemove, 1);
-                          return updatedList;
-                        }
-                        return prev;
-                      });
-                    }}
-                    style={{ display: 'flex', alignItems: 'center', gap: '5px' }}
-                  >
-                    <FaTrashAlt size={16} /> Eliminar
-                  </Button>
-                </li>
-              ))}
-            </ul>
+            {productosEscaneados.length > 0 ? (
+              <div className="mt-3 table-responsive">
+                <table className="table table-striped table-bordered">
+                  <thead className="table-light">
+                    <tr>
+                      <th>#</th>
+                      <th>Producto</th>
+                      <th>Código</th>
+                      <th>Cantidad</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {productosEscaneados.map((p, index) => (
+                      <tr key={index}>
+                        <td>{index + 1}</td>
+                        <td className="fw-bold">{p.nombre}</td>
+                        <td>{p.codigo_bit || p.codigo_barra || '-'}</td>
+                        <td className="text-center fw-bold">{p.cantidad}</td>
+                        <td className="text-center">
+                          <Button
+                            variant="danger"
+                            size="sm"
+                            onClick={() => {
+                              setProductosEscaneados((prev) => {
+                                const indexToRemove = prev.findIndex((prod, i) => i === index);
+                                if (indexToRemove !== -1) {
+                                  const updatedList = [...prev];
+                                  updatedList.splice(indexToRemove, 1);
+                                  return updatedList;
+                                }
+                                return prev;
+                              });
+                            }}
+                          >
+                            <FaTrashAlt size={14} /> Eliminar
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <div className="alert alert-info mt-3">
+                <i className="fas fa-info-circle me-2"></i> No hay productos escaneados. Utilice el escáner o agregue manualmente los productos.
+              </div>
+            )}
             {productosEscaneados.length > 0 && operarioId && (
               <Button 
                 className="mt-3" 
